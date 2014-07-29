@@ -5,6 +5,7 @@ function initial(){
    world = new World("canvas")
    world.new_ball(0, 150, 10, 0, 0)
    world.new_ball(80, 150, 10, 30, 90)
+   world.new_gate(50, 50, 10)
    enable_inputs()
    game_loop()
 }

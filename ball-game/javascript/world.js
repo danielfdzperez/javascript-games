@@ -2,6 +2,7 @@ function World(id, gravity){
    this.canvas = document.getElementById(id)
    this.ctx    = canvas.getContext("2d")
    this.balls  = []
+   this.gates  = []
    this.ctx.transform(1,0,0,-1,canvas.width/2,canvas.height)
    this.gravity = gravity || -0.98
    this.mouse = new Coord() 
@@ -12,12 +13,18 @@ World.prototype.new_ball = function(x, y, r, speed, angle){
    this.balls.push(new Ball(x, y, r, speed, angle))
 }
 
+World.prototype.new_gate = function(x, y, r){
+   this.gates.push(new Gate(x, y, r))
+}
+
 World.prototype.refresh = function() {
     this.ctx.clearRect(-(this.canvas.width/2),0,this.canvas.width,this.canvas.height)
     for(var i=0; i<this.balls.length; i++){
         this.balls[i].draw(this.ctx) 
 	this.balls[i].update_physics(this.gravity, this.canvas)
     }
+    for(var i=0; i<this.gates.length; i++)
+	this.gates[i].draw(this.ctx)
 }
 
 World.prototype.update_mouse_position = function(evt){
