@@ -113,6 +113,7 @@ function win(){
 	winer = true
     }
 }
+
 function collision(){
     var dx = ball.nextx - squeare.x;
     var dy = ball.nexty - squeare.y;
@@ -154,6 +155,7 @@ function collision(){
     //ball2.nextx = (ball2.nextx += ball2.velocityx);
     //ball2.nexty = (ball2.nexty += ball2.velocityy);
 }
+
 function impact(){
     var cdx=Math.abs(ball.nextx-squeare.x-squeare.lado/2);
     var cdy=Math.abs(ball.neyty-squeare.y-squeare.lado/2);

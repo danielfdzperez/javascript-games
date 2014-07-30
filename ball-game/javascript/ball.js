@@ -71,3 +71,4 @@ Ball.prototype.shoot = function(x,y){
     this.speed.y = Math.sin(this.radians) * this.speed.y
     //alert( " x: " + this.speed.x + " " + " y: " + this.speed.y)
 }
+

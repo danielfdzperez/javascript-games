@@ -21,11 +21,19 @@ World.prototype.refresh = function() {
     this.ctx.clearRect(-(this.canvas.width/2),0,this.canvas.width,this.canvas.height)
     for(var i=0; i<this.balls.length; i++){
         this.balls[i].draw(this.ctx) 
+	if(this.balls[i].gate_collision(this.gates[0])){
+	    this.balls.splice(i, 1)
+	    continue
+	}
 	this.balls[i].update_physics(this.gravity, this.canvas)
     }
     for(var i=0; i<this.gates.length; i++)
 	this.gates[i].draw(this.ctx)
 }
+
+World.prototype.get_n_balls = function(){
+    return this.balls.length
+} 
 
 World.prototype.update_mouse_position = function(evt){
     this.mouse.x=evt.pageX-this.canvas.offsetLeft
