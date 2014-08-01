@@ -11,10 +11,14 @@ function Ball(x,y, radius,speed, angle){
     this.speed.y = Math.sin(this.radians) * this.speed.y
 }
 
-Ball.prototype.update_physics = function(gravity, canvas){
+Ball.prototype.update_physics = function(canvas, gravity,friction){
+   friction = friction || 0
+   gravity = gravity || 0
    this.speed.y += gravity
-   this.next.y = this.pos.y + this.speed.y
-   this.next.x = this.pos.x + this.speed.x
+   this.speed.y -= this.speed.y * friction
+   this.speed.x -= this.speed.x * friction
+   this.next.y = this.pos.y + (this.speed.y - this.speed.y * friction)
+   this.next.x = this.pos.x + (this.speed.x - this.speed.x * friction)
    if (this.next.x >= (canvas.width/2 - (this.radius))|| 
 	   this.next.x <= (-canvas.width/2 + (this.radius)) ) {
        this.speed.x *= -1
@@ -25,10 +29,11 @@ Ball.prototype.update_physics = function(gravity, canvas){
    if(this.next.y <= this.radius) {
       if(this.speed.y < 0)
          this.speed.y *= -1
-      if(this.speed.x < 0)
-       this.speed.x +=  0.1
-      else
-       this.speed.x -=  0.1
+      this.speed.x -= this.speed.x * 0.01
+      //if(this.speed.x < 0)
+      // this.speed.x +=  0.1
+      //else
+      // this.speed.x -=  0.1
    }
    if(this.speed.x < 0.3 && this.speed.x > -1){
        this.speed.x = 0

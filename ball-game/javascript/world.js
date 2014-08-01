@@ -1,11 +1,15 @@
-function World(id, gravity){
+function World(id, gravity, friction){
    this.canvas = document.getElementById(id)
    this.ctx    = canvas.getContext("2d")
    this.balls  = []
    this.gates  = []
    this.boxes  = []
    this.ctx.transform(1,0,0,-1,canvas.width/2,canvas.height)
-   this.gravity = gravity || -0.98
+   this.friction = friction || 0
+   if(gravity == 0)
+       this.gravity = 0
+   else
+       this.gravity = gravity || -0.98
    this.mouse = new Coord() 
    this.press = new Coord() 
 } 
@@ -24,20 +28,25 @@ World.prototype.new_box = function(x, y, side, speed, angle){
 
 World.prototype.refresh = function() {
     this.ctx.clearRect(-(this.canvas.width/2),0,this.canvas.width,this.canvas.height)
+
     for(var i=0; i<this.balls.length; i++){
-	if(this.balls[i].gate_collision(this.gates[0])){
+	var ball_die = false
+	for(var z=0; z<this.gates.length && ball_die != true; z++)
+	if(this.balls[i].gate_collision(this.gates[z])){
 	    this.balls.splice(i, 1)
-	    continue
+	    ball_die = true
 	}
-        for(var z=0; z<this.balls.length; z++){
-	    if(z != i)
-	       if(this.balls[i].ball_impact(this.balls[z])){
-		   this.balls[i].ball_collision(this.balls[z])
-	           this.balls[z].update_physics(this.gravity, this.canvas)
-	       }
+	if(!ball_die){
+           for(var z=0; z<this.balls.length; z++){
+	       if(z != i)
+	          if(this.balls[i].ball_impact(this.balls[z])){
+	   	   this.balls[i].ball_collision(this.balls[z])
+	              this.balls[z].update_physics(this.canvas, this.gravity, this.friction)
+	          }
+	   }
+	   this.balls[i].update_physics(this.canvas, this.gravity, this.friction)
+           this.balls[i].draw(this.ctx) 
 	}
-	this.balls[i].update_physics(this.gravity, this.canvas)
-        this.balls[i].draw(this.ctx) 
     }
     for(var i=0; i<this.boxes.length; i++){
 	for(var z=0; z<this.balls.length; z++)

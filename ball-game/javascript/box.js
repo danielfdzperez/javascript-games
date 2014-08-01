@@ -40,6 +40,7 @@ Box.prototype.update_physics = function(gravity, canvas){
        this.speed.x +=  0.1
       else
        this.speed.x -=  0.1
+      this.next.y = 0
    }
    
    if(this.next.y <= 0 && this.speed.y < 1 && this.speed.y > -1){
@@ -57,18 +58,25 @@ Box.prototype.update_physics = function(gravity, canvas){
        }
    this.pos.y = this.next.y
    this.pos.x = this.next.x
+   this.stop_y = false
 }
 
 Box.prototype.box_impact = function(box){
-    if(this.pos.y >= box.pos.y + box.side && this.pos.x < box.pos.x + box.side && this.pos.x + this.side > box.pos.x && 
-	    this.speed.y < 1 && this.speed.y > -1){
-	this.stop_y = true
-    }
-    else
-	this.stop_y = false
-	if(this.pos.x < box.pos.x + box.side && this.pos.x + this.side > box.pos.x && this.pos.y < box.pos.y + box.side 
+    //if(this.pos.y <= box.pos.y + box.side && this.pos.x < box.pos.x + box.side && this.pos.x + this.side > box.pos.x && 
+    //	    this.speed.y < 1 && this.speed.y > -1){
+    //        if(this.pos.y + this.size + box.pos.y + box.side && this.speed.y < 1 && this.speed.y > -1)
+    //    	this.stop_y = true
+    //}
+    //else
+	if(this.pos.x < box.pos.x + box.side && this.pos.x + this.side > box.pos.x && (this.pos.y - 3) < box.pos.y + box.side 
 	    && this.pos.y + this.side > box.pos.y){
-	    return true
+	    if((this.pos.y - 3) > box.pos.y && this.speed.y < 1 && this.speed.y > -1){
+		this.pos.y = box.pos.y + box.side + 2
+		this.stop_y = true
+	    }
+	    else
+		if(!(this.speed.y < 1 && this.speed.y > -1))
+	           return true
 	}
     return false
 }

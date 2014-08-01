@@ -2,27 +2,36 @@ window.addEventListener("load", initial, false)
 var world = null
 
 function initial(){
-   world = new World("canvas")
+   world = new World("canvas", 0, 0.01)
    
    enable_inputs()
    start_level()
 }
 
-start_level = function(){
-   world.new_ball(100, 10, 10, 0, 180)
-   //world.new_ball(80, 10, 10, 20, 0)
-   world.new_gate(-200, 50, 10)
-   world.new_box(-100, 0)
-   world.new_box(-100, 100)
-   //world.new_box(-50, 0)
+function start_level(){
+
+   world.new_ball(200, 150, 10)
+   world.new_ball(-150, 150, 10)
+   world.new_ball(-170, 160, 10)
+   world.new_ball(-170, 137, 10)
+
+   world.new_gate(240, 10, 10)
+   world.new_gate(-240, 10, 10)
+   world.new_gate(0, 10, 10)
+
+   world.new_gate(240, 290, 10)
+   world.new_gate(-240, 290, 10)
+   world.new_gate(0, 290, 10)
+ //  world.new_box(180, 50, 10)
    game_loop()
 }
 
 function game_loop(){
-    world.refresh() 
-    if(world.get_n_balls() == 0)
+    if(world.get_n_balls() == 0){
 	end_game()
-    setTimeout(game_loop, 20)
+    }
+    world.refresh() 
+    setTimeout(game_loop, 50)
 }
 
 function end_game(){
