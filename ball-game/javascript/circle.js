@@ -1,23 +1,13 @@
+Circle.prototype = new GeometricShapes
+Circle.prototype.constructor = Circle
+
 function Circle(posx,posy, radius){
-    this.pos = new Coord(posx, posy)
-    this.radius = radius
-    this.mass = radius
-}
-
-Circle.prototype.get_coord_x = function(){
-    return this.pos.x
-}
-
-Circle.prototype.get_coord_y = function(){
-    return this.pos.y
+   GeometricShapes.call(this, posx, posy, radius)
+   this.radius = radius
 }
 
 Circle.prototype.get_radius = function(){
    return this.radius
-}
-
-Circle.prototype.get_mass = function(){
-   return this.mass
 }
 
 Circle.prototype.draw = function(ctx){

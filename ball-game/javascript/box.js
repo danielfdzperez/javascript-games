@@ -1,8 +1,16 @@
-Ball.prototype = new Circle
-Ball.prototype.constructor = Ball
+Box.prototype = new Square
+Box.prototype.constructor = Box
 
-function Ball(x,y, radius,speed, angle){
-    Circle.call(this,x,y,radius)
+/*
+ * Parametros
+ *    {Number} x & y X and Y position.
+ *    Optativos
+ *        {Number} side El tamaño del cuadrado. Si se omite 30.
+ *        {Number} speed La velocidad. Si se omite 0.
+ *        {Number} angle El ángulo. Si se omite 0.
+ */
+function Box(x, y, side, speed, angle){
+    Square.call(this, x, y, side || 30)
     this.speed = new Coord(speed || 0)
     this.next  = new Coord()
     this.angle = angle || 0
@@ -11,18 +19,21 @@ function Ball(x,y, radius,speed, angle){
     this.speed.y = Math.sin(this.radians) * this.speed.y
 }
 
-Ball.prototype.update_physics = function(gravity, canvas){
+Box.prototype.update_physics = function(gravity, canvas){
    this.speed.y += gravity
    this.next.y = this.pos.y + this.speed.y
    this.next.x = this.pos.x + this.speed.x
-   if (this.next.x >= (canvas.width/2 - (this.radius))|| 
-	   this.next.x <= (-canvas.width/2 + (this.radius)) ) {
+   var half_side = this.side/2
+   if (this.next.x >= (canvas.width/2 - (half_side))|| 
+	   this.next.x <= (-canvas.width/2) ) {
        this.speed.x *= -1
    } 
-   if (this.next.y >= (canvas.height - (this.radius))){
+   
+
+   if (this.next.y >= (canvas.height - (half_side))){
        this.speed.y *= -1
    }
-   if(this.next.y <= this.radius) {
+   if(this.next.y <= 0) {
       if(this.speed.y < 0)
          this.speed.y *= -1
       if(this.speed.x < 0)
@@ -30,59 +41,49 @@ Ball.prototype.update_physics = function(gravity, canvas){
       else
        this.speed.x -=  0.1
    }
-   if(this.speed.x < 0.3 && this.speed.x > -1){
-       this.speed.x = 0
-       this.stop_x = true
-   }
-   if(this.next.y <= this.radius && this.speed.y < 1 && this.speed.y > -1){
-       this.next.y = 0 + this.radius
+   
+   if(this.next.y <= 0 && this.speed.y < 1 && this.speed.y > -1){
+       this.pos.y = 0
        this.speed.y = 0
        this.stop_y = true
    }
+   if(this.speed.x < 0.3 && this.speed.x > -1){
+       this.speed.x = 0
+       this.stop_x = true
+   }   
+   if(this.stop_y){
+           this.next.y = this.pos.y
+	   this.speed.y = 0
+       }
    this.pos.y = this.next.y
    this.pos.x = this.next.x
 }
 
-Ball.prototype.shoot = function(x,y){
-    this.angle = ((Math.atan2(y,x)) * 360)/(2*Math.PI)
-    if(y<0)
-	this.angle += 360
-    else
-       if(x<0 && y<0)
-	  this.angle += 180
-    //alert("x: " + x + " y: " + y + " ang: " + this.angle)
-    if(Math.abs(x) >= 30 || Math.abs(y) >= 30){
-	     this.speed.x += 30
-	     this.speed.y += 30
+Box.prototype.box_impact = function(box){
+    if(this.pos.y >= box.pos.y + box.side && this.pos.x < box.pos.x + box.side && this.pos.x + this.side > box.pos.x && 
+	    this.speed.y < 1 && this.speed.y > -1){
+	this.stop_y = true
     }
     else
-      if(Math.abs(x)>Math.abs(y)){
-         this.speed.x += Math.abs(x)
-         this.speed.y += Math.abs(x)
-      }
-      else{
-         this.speed.y += Math.abs(y)
-         this.speed.x += Math.abs(y)
-      }
-    this.radians = this.angle * Math.PI/180
-    //alert(Math.cos(this.radians) + " sen: " + Math.sin(this.radians))
-    //alert( " x: " + this.speed.x + " " + " y: " + this.speed.y)
-    this.speed.x = Math.cos(this.radians) * this.speed.x
-    this.speed.y = Math.sin(this.radians) * this.speed.y
-    //alert( " x: " + this.speed.x + " " + " y: " + this.speed.y)
+	this.stop_y = false
+	if(this.pos.x < box.pos.x + box.side && this.pos.x + this.side > box.pos.x && this.pos.y < box.pos.y + box.side 
+	    && this.pos.y + this.side > box.pos.y){
+	    return true
+	}
+    return false
 }
 
-Ball.prototype.ball_impact = function(circle){
-    var distance = new Coord((this.pos.x - circle.pos.x), (this.pos.y - circle.pos.y))
+Box.prototype.ball_impact = function(ball){
+   var cdx=Math.abs(ball.pos.x - this.pos.x - this.side/2)
+   var cdy=Math.abs(ball.pos.y - this.pos.y - this.side/2)
+   //alert(cdx)
 
-    var total_distance = (distance.x * distance.x + distance.y * distance.y)
-    if(total_distance <=((this.radius + circle.radius) * (this.radius + circle.radius)))
-	return true
-    else
-	return false
+ //  alert(cdy + " " + (this.side/2 + ball.radius))
+   if( cdx <= (this.side/2 + ball.radius) && cdy <= (this.side/2 + ball.radius) )
+       this.collision(ball)
 }
 
-Ball.prototype.ball_collision = function(ball){
+Box.prototype.collision = function(ball){
     var distance = new Coord(this.pos.x - ball.pos.x, this.pos.y - ball.pos.y)
     var collision_angle = Math.atan2(distance.y, distance.x);
     var this_speed = Math.sqrt(this.speed.x * this.speed.x + this.speed.y * this.speed.y);
@@ -119,5 +120,5 @@ Ball.prototype.ball_collision = function(ball){
     this.pos.y = (this.pos.y += this.speed.y)
     ball.pos.x = (ball.pos.x += ball.speed.x)
     ball.pos.y = (ball.pos.y += ball.speed.y)
- //   alert( " ball:" + ball.next.x + " y:" + ball.next.y + " this:" + this.next.x + " y:" + this.next.y )
+
 }

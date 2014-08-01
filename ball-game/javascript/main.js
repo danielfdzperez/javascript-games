@@ -9,9 +9,12 @@ function initial(){
 }
 
 start_level = function(){
-   world.new_ball(0, 150, 10, 0, 0)
-   world.new_ball(80, 150, 10, 30, 90)
-   world.new_gate(50, 50, 10)
+   world.new_ball(100, 10, 10, 0, 180)
+   //world.new_ball(80, 10, 10, 20, 0)
+   world.new_gate(-200, 50, 10)
+   world.new_box(-100, 0)
+   world.new_box(-100, 100)
+   //world.new_box(-50, 0)
    game_loop()
 }
 

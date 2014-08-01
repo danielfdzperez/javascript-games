@@ -3,6 +3,7 @@ function World(id, gravity){
    this.ctx    = canvas.getContext("2d")
    this.balls  = []
    this.gates  = []
+   this.boxes  = []
    this.ctx.transform(1,0,0,-1,canvas.width/2,canvas.height)
    this.gravity = gravity || -0.98
    this.mouse = new Coord() 
@@ -17,16 +18,40 @@ World.prototype.new_gate = function(x, y, r){
    this.gates.push(new Gate(x, y, r))
 }
 
+World.prototype.new_box = function(x, y, side, speed, angle){
+  this.boxes.push(new Box(x, y, side, speed, angle))
+}
+
 World.prototype.refresh = function() {
     this.ctx.clearRect(-(this.canvas.width/2),0,this.canvas.width,this.canvas.height)
     for(var i=0; i<this.balls.length; i++){
-        this.balls[i].draw(this.ctx) 
 	if(this.balls[i].gate_collision(this.gates[0])){
 	    this.balls.splice(i, 1)
 	    continue
 	}
+        for(var z=0; z<this.balls.length; z++){
+	    if(z != i)
+	       if(this.balls[i].ball_impact(this.balls[z])){
+		   this.balls[i].ball_collision(this.balls[z])
+	           this.balls[z].update_physics(this.gravity, this.canvas)
+	       }
+	}
 	this.balls[i].update_physics(this.gravity, this.canvas)
+        this.balls[i].draw(this.ctx) 
     }
+    for(var i=0; i<this.boxes.length; i++){
+	for(var z=0; z<this.balls.length; z++)
+	    this.boxes[i].ball_impact(this.balls[z])
+        for(var z=0; z<this.boxes.length; z++)
+	    if(i != z)
+	       if(this.boxes[i].box_impact(this.boxes[z])){
+		   this.boxes[i].collision(this.boxes[z])
+		   this.boxes[z].update_physics(this.gravity, this.canvas)
+	}
+	this.boxes[i].update_physics(this.gravity, this.canvas)
+        this.boxes[i].draw(this.ctx)
+    }
+
     for(var i=0; i<this.gates.length; i++)
 	this.gates[i].draw(this.ctx)
 }
@@ -38,6 +63,28 @@ World.prototype.get_n_balls = function(){
 World.prototype.update_mouse_position = function(evt){
     this.mouse.x=evt.pageX-this.canvas.offsetLeft
     this.mouse.y=evt.pageY-this.canvas.offsetTop
+    var speed;
+    var x = (this.mouse.x - this.press.x)
+    var y = (this.mouse.y - this.press.y)*-1
+    var angle = ((Math.atan2(y,x)) * 360)/(2*Math.PI)
+    if(y<0)
+	angle += 360
+    else
+       if(x<0 && y<0)
+	  angle += 180
+
+    if(Math.abs(x) >= 30 || Math.abs(y) >= 30){
+             speed = 30
+    }
+    else
+      if(Math.abs(x)>Math.abs(y)){
+         speed = Math.abs(x)
+      }
+      else{
+         speed = Math.abs(y)
+      }
+    speed = (speed * 100) / 30
+    document.getElementById("power").innerHTML = "Power: " + speed + "%" + "<br>\n" + "Angle: " + angle + "º"
 }
 
 World.prototype.update_angle_and_speed_ball = function(evt){
@@ -50,4 +97,5 @@ World.prototype.update_angle_and_speed_ball = function(evt){
 World.prototype.mouse_press = function(evt){
     this.press.x = this.mouse.x
     this.press.y = this.mouse.y
+    
 }
