@@ -2,14 +2,15 @@ window.addEventListener("load", initial, false)
 var world = null
 
 function initial(){
-   world = new World("canvas", 0, 0.01)
+   world = new World("canvas")
    
    enable_inputs()
    start_level()
 }
 
 function start_level(){
-
+/*
+ * Billar
    world.new_ball(200, 150, 10)
    world.new_ball(-150, 150, 10)
    world.new_ball(-170, 160, 10)
@@ -22,7 +23,16 @@ function start_level(){
    world.new_gate(240, 290, 10)
    world.new_gate(-240, 290, 10)
    world.new_gate(0, 290, 10)
- //  world.new_box(180, 50, 10)
+ */
+   
+   world.new_ball(200, 10, 10)
+   world.new_gate(-240, 10, 10)
+   world.new_box(-150, 0, 30)
+   world.new_box(-150, 30, 30)
+   world.new_box(-150, 60, 30)
+   world.new_box(-150, 90, 30)
+   //world.new_box(150, 0, 60, 10, 180)
+   //world.new_box(100, 20, 48)
    game_loop()
 }
 

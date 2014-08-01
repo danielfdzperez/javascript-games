@@ -10,10 +10,11 @@ Circle.prototype.get_radius = function(){
    return this.radius
 }
 
-Circle.prototype.draw = function(ctx){
+Circle.prototype.draw = function(ctx, color){
     //Dibuja el circulo
+    color = color || 'black'
     ctx.beginPath()
-    ctx.fillStyle  = '#000000'
+    ctx.fillStyle  = color
     ctx.arc(this.get_coord_x(), this.get_coord_y(),this.get_radius(), 0, (Math.PI/180)*360, false)
     ctx.fill()
     ctx.closePath()

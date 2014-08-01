@@ -62,22 +62,17 @@ Box.prototype.update_physics = function(gravity, canvas){
 }
 
 Box.prototype.box_impact = function(box){
-    //if(this.pos.y <= box.pos.y + box.side && this.pos.x < box.pos.x + box.side && this.pos.x + this.side > box.pos.x && 
-    //	    this.speed.y < 1 && this.speed.y > -1){
-    //        if(this.pos.y + this.size + box.pos.y + box.side && this.speed.y < 1 && this.speed.y > -1)
-    //    	this.stop_y = true
-    //}
-    //else
-	if(this.pos.x < box.pos.x + box.side && this.pos.x + this.side > box.pos.x && (this.pos.y - 3) < box.pos.y + box.side 
-	    && this.pos.y + this.side > box.pos.y){
-	    if((this.pos.y - 3) > box.pos.y && this.speed.y < 1 && this.speed.y > -1){
-		this.pos.y = box.pos.y + box.side + 2
-		this.stop_y = true
-	    }
-	    else
-		if(!(this.speed.y < 1 && this.speed.y > -1))
-	           return true
-	}
+    if(this.pos.x < box.pos.x + box.side && this.pos.x + this.side > box.pos.x && (this.pos.y - 3) < box.pos.y + box.side 
+        && this.pos.y + this.side > box.pos.y){
+        if((this.pos.y - 3) > box.pos.y && this.speed.y < 1 && this.speed.y > -1){
+    	this.pos.y = box.pos.y + box.side + 2
+    	this.stop_y = true
+        }
+        else
+            //if(!(this.speed.y < 1 && this.speed.y > -1))
+	    if(!this.stop_y)
+               return true
+    }
     return false
 }
 

@@ -45,7 +45,11 @@ World.prototype.refresh = function() {
 	          }
 	   }
 	   this.balls[i].update_physics(this.canvas, this.gravity, this.friction)
-           this.balls[i].draw(this.ctx) 
+	   if(i == 0)
+             this.balls[i].draw(this.ctx, 'blue')
+	   else
+             this.balls[i].draw(this.ctx)
+
 	}
     }
     for(var i=0; i<this.boxes.length; i++){
