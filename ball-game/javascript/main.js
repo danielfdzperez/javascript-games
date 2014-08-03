@@ -23,15 +23,19 @@ function start_level(){
    world.new_gate(240, 290, 10)
    world.new_gate(-240, 290, 10)
    world.new_gate(0, 290, 10)
- */
+   */
+ 
    
-   world.new_ball(200, 10, 10)
+   //world.new_box(-60, 0, 20)
+   //world.new_ball(-55, 60, 10)
+
+   world.new_ball(90, 0, 10)
+   world.new_ball(150, 0, 10)
    world.new_gate(-240, 10, 10)
+   world.new_box(0, 0, 20)
    world.new_box(-150, 0, 30)
    world.new_box(-150, 30, 30)
    world.new_box(-150, 60, 30)
-   world.new_box(-150, 90, 30)
-   //world.new_box(150, 0, 60, 10, 180)
    //world.new_box(100, 20, 48)
    game_loop()
 }

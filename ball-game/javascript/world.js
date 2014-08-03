@@ -27,8 +27,10 @@ World.prototype.new_box = function(x, y, side, speed, angle){
 }
 
 World.prototype.refresh = function() {
+    /*Clear the canvas*/
     this.ctx.clearRect(-(this.canvas.width/2),0,this.canvas.width,this.canvas.height)
 
+    /*Update the balls*/
     for(var i=0; i<this.balls.length; i++){
 	var ball_die = false
 	for(var z=0; z<this.gates.length && ball_die != true; z++)
@@ -41,9 +43,10 @@ World.prototype.refresh = function() {
 	       if(z != i)
 	          if(this.balls[i].ball_impact(this.balls[z])){
 	   	   this.balls[i].ball_collision(this.balls[z])
-	              this.balls[z].update_physics(this.canvas, this.gravity, this.friction)
+	           this.balls[z].update_physics(this.canvas, this.gravity, this.friction)
 	          }
 	   }
+	//   for(var z=0; z<this.boxes.length; z++)
 	   this.balls[i].update_physics(this.canvas, this.gravity, this.friction)
 	   if(i == 0)
              this.balls[i].draw(this.ctx, 'blue')
@@ -52,9 +55,14 @@ World.prototype.refresh = function() {
 
 	}
     }
+    /*Upadte the boxes*/
     for(var i=0; i<this.boxes.length; i++){
-	for(var z=0; z<this.balls.length; z++)
-	    this.boxes[i].ball_impact(this.balls[z])
+	for(var z=0; z<this.balls.length; z++){
+	    if(this.boxes[i].ball_impact(this.balls[z])){
+	       this.boxes[i].collision(this.balls[z])
+               this.balls[z].update_physics(this.canvas, this.gravity, this.friction)
+	    }
+	}
         for(var z=0; z<this.boxes.length; z++)
 	    if(i != z)
 	       if(this.boxes[i].box_impact(this.boxes[z])){
@@ -65,6 +73,7 @@ World.prototype.refresh = function() {
         this.boxes[i].draw(this.ctx)
     }
 
+    /*Print the gates*/
     for(var i=0; i<this.gates.length; i++)
 	this.gates[i].draw(this.ctx)
 }

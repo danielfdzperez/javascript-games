@@ -19,14 +19,19 @@ Ball.prototype.update_physics = function(canvas, gravity,friction){
    this.speed.x -= this.speed.x * friction
    this.next.y = this.pos.y + (this.speed.y - this.speed.y * friction)
    this.next.x = this.pos.x + (this.speed.x - this.speed.x * friction)
-   if (this.next.x >= (canvas.width/2 - (this.radius))|| 
-	   this.next.x <= (-canvas.width/2 + (this.radius)) ) {
+   if (this.next.x >= canvas.width/2 - this.radius){
        this.speed.x *= -1
+       this.next.x = canvas.width/2 - this.radius
+
+   }
+   if(this.next.x <= (-canvas.width/2) + this.radius) {
+       this.speed.x *= -1
+       this.next.x = (-canvas.width/2) + this.radius
    } 
    if (this.next.y >= (canvas.height - (this.radius))){
        this.speed.y *= -1
    }
-   if(this.next.y <= this.radius) {
+   if(this.next.y <= 0) {
       if(this.speed.y < 0)
          this.speed.y *= -1
       this.speed.x -= this.speed.x * 0.01
@@ -40,7 +45,7 @@ Ball.prototype.update_physics = function(canvas, gravity,friction){
        this.stop_x = true
    }
    if(this.next.y <= this.radius && this.speed.y < 1 && this.speed.y > -1){
-       this.next.y = 0 + this.radius
+       this.next.y = 0
        this.speed.y = 0
        this.stop_y = true
    }
@@ -85,6 +90,16 @@ Ball.prototype.ball_impact = function(circle){
 	return true
     else
 	return false
+}
+
+Ball.prototype.box_impact = function(box){
+   var cdx=Math.abs(this.pos.x - box.pos.x - box.side/2)
+   var cdy=Math.abs(this.pos.y - box.pos.y - box.side/2)
+   //alert(cdx)
+
+ //  alert(cdy + " " + (box.side/2 + this.radius))
+   if( cdx <= (box.side/2 + this.radius) && cdy <= (box.side/2 + this.radius) )
+       this.collision(box)
 }
 
 Ball.prototype.ball_collision = function(ball){

@@ -24,9 +24,13 @@ Box.prototype.update_physics = function(gravity, canvas){
    this.next.y = this.pos.y + this.speed.y
    this.next.x = this.pos.x + this.speed.x
    var half_side = this.side/2
-   if (this.next.x >= (canvas.width/2 - (half_side))|| 
-	   this.next.x <= (-canvas.width/2) ) {
+   if (this.next.x >= canvas.width/2 - half_side){
        this.speed.x *= -1
+       this.next.x = canvas.width/2 - half_side
+   } 
+   if(this.next.x <= (-canvas.width/2) ) {
+       this.speed.x *= -1
+       this.next.x = -canvas.width/2 + half_side
    } 
    
 
@@ -83,45 +87,53 @@ Box.prototype.ball_impact = function(ball){
 
  //  alert(cdy + " " + (this.side/2 + ball.radius))
    if( cdx <= (this.side/2 + ball.radius) && cdy <= (this.side/2 + ball.radius) )
-       this.collision(ball)
+       return true
+   else
+       false
 }
 
-Box.prototype.collision = function(ball){
-    var distance = new Coord(this.pos.x - ball.pos.x, this.pos.y - ball.pos.y)
+Box.prototype.collision = function(object){
+    //if(object instanceof Ball)
+	//object.pos.y -= 10
+    var distance = new Coord(this.pos.x - object.pos.x, this.pos.y - object.pos.y)
+ //   alert(distance.x + " " + distance.y)
     var collision_angle = Math.atan2(distance.y, distance.x);
     var this_speed = Math.sqrt(this.speed.x * this.speed.x + this.speed.y * this.speed.y);
-    var ball_speed = Math.sqrt(ball.speed.x * ball.speed.x + ball.speed.y * ball.speed.y);
+    var object_speed = Math.sqrt(object.speed.x * object.speed.x + object.speed.y * object.speed.y);
 
     var this_direction = Math.atan2(this.speed.y, this.speed.x);
-    var ball_direction = Math.atan2(ball.speed.y, ball.speed.x);
+    var object_direction = Math.atan2(object.speed.y, object.speed.x);
 
     var this_velocity = new Coord(this_speed * Math.cos(this_direction - collision_angle), 
 	    this_speed * Math.sin(this_direction - collision_angle))
-    var ball_velocity = new Coord(ball_speed * Math.cos(ball_direction - collision_angle), 
-	    ball_speed * Math.sin(ball_direction - collision_angle))
+    var object_velocity = new Coord(object_speed * Math.cos(object_direction - collision_angle), 
+	    object_speed * Math.sin(object_direction - collision_angle))
 
     //v'₁ = [(m₁ - m₂) v₁+ 2 m₂ v₂] / m₁ + m₂ 
-    var this_final_velocity = new Coord( ((this.mass - ball.mass) * this_velocity.x +
-	    (ball.mass + ball.mass) * ball_velocity.x) / (this.mass + ball.mass), this_velocity.y )
+    var this_final_velocity = new Coord( ((this.mass - object.mass) * this_velocity.x +
+	    (object.mass + object.mass) * object_velocity.x) / (this.mass + object.mass), this_velocity.y )
 
-    var ball_final_velocity = new Coord( ((this.mass + this.mass) * this_velocity.x +
-	    (ball.mass - this.mass) * ball_velocity.x) / (this.mass + ball.mass),  ball_velocity.y)
+    var object_final_velocity = new Coord( ((this.mass + this.mass) * this_velocity.x +
+	    (object.mass - this.mass) * object_velocity.x) / (this.mass + object.mass),  object_velocity.y)
 
+    //alert("x: " + object_final_velocity.x + " y: " + object_final_velocity.y)
     this.speed.x = Math.cos(collision_angle) * this_final_velocity.x +
 	Math.cos(collision_angle + Math.PI/2) * this_final_velocity.y
 
+  //  alert(collision_angle)
     this.speed.y = Math.sin(collision_angle) * this_final_velocity.x +
 	Math.sin(collision_angle + Math.PI/2) * this_final_velocity.y
 
-    ball.speed.x = Math.cos(collision_angle) * ball_final_velocity.x +
-	Math.cos(collision_angle + Math.PI/2) * ball_final_velocity.y
+    object.speed.x = Math.cos(collision_angle) * object_final_velocity.x +
+	Math.cos(collision_angle + Math.PI/2) * object_final_velocity.y
 
-    ball.speed.y = Math.sin(collision_angle) * ball_final_velocity.x +
-	Math.sin(collision_angle + Math.PI/2) * ball_final_velocity.y
+    object.speed.y = Math.sin(collision_angle) * object_final_velocity.x +
+	Math.sin(collision_angle + Math.PI/2) * object_final_velocity.y
 
     this.pos.x = (this.pos.x += this.speed.x)
     this.pos.y = (this.pos.y += this.speed.y)
-    ball.pos.x = (ball.pos.x += ball.speed.x)
-    ball.pos.y = (ball.pos.y += ball.speed.y)
+    object.pos.x = (object.pos.x += object.speed.x)
+    object.pos.y = (object.pos.y += object.speed.y)
+    //alert (" x speed: " + object.speed.x + " y speed: " + object.speed.y )
 
 }

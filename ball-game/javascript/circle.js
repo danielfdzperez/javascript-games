@@ -15,7 +15,7 @@ Circle.prototype.draw = function(ctx, color){
     color = color || 'black'
     ctx.beginPath()
     ctx.fillStyle  = color
-    ctx.arc(this.get_coord_x(), this.get_coord_y(),this.get_radius(), 0, (Math.PI/180)*360, false)
+    ctx.arc(this.get_coord_x(), this.get_coord_y() + this.get_radius(),this.get_radius(), 0, (Math.PI/180)*360, false)
     ctx.fill()
     ctx.closePath()
 }
