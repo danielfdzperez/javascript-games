@@ -1,7 +1,7 @@
 Square.prototype = new GeometricShapes
 Square.prototype.constructor = Square
-function Square(posx, posy, side){
-   GeometricShapes.call(this, posx, posy, side)
+function Square(posx, posy, side, elasticity){
+   GeometricShapes.call(this, posx, posy, side, elasticity)
    this.side = side
 }
 

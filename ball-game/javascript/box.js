@@ -10,7 +10,7 @@ Box.prototype.constructor = Box
  *        {Number} angle El ángulo. Si se omite 0.
  */
 function Box(x, y, side, speed, angle){
-    Square.call(this, x, y, side || 30)
+    Square.call(this, x, y, side || 30, 0.3)
     this.speed = new Coord(speed || 0)
     this.next  = new Coord()
     this.angle = angle || 0
@@ -40,10 +40,8 @@ Box.prototype.update_physics = function(gravity, canvas){
    if(this.next.y <= 0) {
       if(this.speed.y < 0)
          this.speed.y *= -1
-      if(this.speed.x < 0)
-       this.speed.x +=  0.1
-      else
-       this.speed.x -=  0.1
+      this.speed.y -= this.speed.y * this.elasticity
+      this.speed.x -= this.speed.x * 0.01
       this.next.y = 0
    }
    
@@ -81,7 +79,7 @@ Box.prototype.box_impact = function(box){
 }
 
 Box.prototype.ball_impact = function(ball){
-   var cdx=Math.abs(ball.pos.x - this.pos.x - this.side/2)
+   var cdx=Math.abs(ball.pos.x - (this.pos.x - this.side/2)- this.side/2)
    var cdy=Math.abs(ball.pos.y - this.pos.y - this.side/2)
    //alert(cdx)
 
@@ -89,7 +87,7 @@ Box.prototype.ball_impact = function(ball){
    if( cdx <= (this.side/2 + ball.radius) && cdy <= (this.side/2 + ball.radius) )
        return true
    else
-       false
+       return false
 }
 
 Box.prototype.collision = function(object){
@@ -135,5 +133,4 @@ Box.prototype.collision = function(object){
     object.pos.x = (object.pos.x += object.speed.x)
     object.pos.y = (object.pos.y += object.speed.y)
     //alert (" x speed: " + object.speed.x + " y speed: " + object.speed.y )
-
 }

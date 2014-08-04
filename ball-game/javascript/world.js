@@ -4,6 +4,7 @@ function World(id, gravity, friction){
    this.balls  = []
    this.gates  = []
    this.boxes  = []
+   this.walls  = []
    this.ctx.transform(1,0,0,-1,canvas.width/2,canvas.height)
    this.friction = friction || 0
    if(gravity == 0)
@@ -26,10 +27,16 @@ World.prototype.new_box = function(x, y, side, speed, angle){
   this.boxes.push(new Box(x, y, side, speed, angle))
 }
 
+World.prototype.new_wall = function(x, y, height, width){
+    this.walls.push(new Rectangle(x, y, height, width))
+}
 World.prototype.refresh = function() {
     /*Clear the canvas*/
     this.ctx.clearRect(-(this.canvas.width/2),0,this.canvas.width,this.canvas.height)
 
+    /*Draw the walls*/
+    for(var i=0; i<this.walls.length; i++)
+	this.walls[i].draw(this.ctx)
     /*Update the balls*/
     for(var i=0; i<this.balls.length; i++){
 	var ball_die = false
