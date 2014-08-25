@@ -1,4 +1,7 @@
 function Coord(x, y){
     this.x = x
-    this.y = y || x
+    if(y == undefined)
+	this.y = x
+    else
+        this.y = y
 }

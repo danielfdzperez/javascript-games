@@ -1,7 +1,7 @@
 function GameObject(px, py, sx, sy, ax, ay){
     this.pos = new Coord(px,py)
-    this.speed = new Coord(sx || 0, sy)
-    this.acceleration = new Coord(ax || 0, ay)
+    this.speed = new Coord(sx, sy)
+    this.acceleration = new Coord(ax, ay)
     this.rectangles = []
 
 
@@ -60,14 +60,16 @@ GameObject.prototype.collision = function(obj){
 		collision = true
     return collision
 }
-GameObject.prototype.update_physics = function(){
+
+GameObject.prototype.update_physics = function(delta){
     this.speed.x += this.acceleration.x
     this.speed.y += this.acceleration.y
-    var next_pos = new Coord((this.pos.x + this.speed.x), (this.pos.y + this.speed.y))
-    if(next_pos.x < 445 && next_pos.x > -20 && next_pos.y < 445 && next_pos.y > -20){
-         this.pos.x += this.speed.x
-         this.pos.y += this.speed.y
-         this.update_rectangle_positions()
+    if(this.constructor.name == "Player")
+	 this.update_pos(delta)
+    else{
+	   this.pos.x += this.speed.x*delta
+           this.pos.y += this.speed.y*delta
+           this.update_rectangle_positions()
     }
 }
 

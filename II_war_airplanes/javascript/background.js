@@ -22,10 +22,8 @@ function Background(){
     this.tiles = []
     this.max_tiles = 4
     this.show_map = 0
-    this.index = [0, 1, 2, 3, 4, 5, 6, 7]
-    this.cicle = 0
-    this.s_time = new Date().getTime()
-    this.e_time = null
+    this.index = [15, 0, 1, 2, 3, 4, 5, 6, 7]
+    this.advance = 0 //Avance lento del mapa
 }
 
 Background.prototype.load_tiles = function(){
@@ -39,19 +37,16 @@ Background.prototype.draw = function(ctx){
 
     for(var y=0; y<this.index.length; y++){
         for(var x=0; x<this.map[y].length; x++)
-    	ctx.drawImage(this.tiles[this.map[this.index[y]][x]], x*64, y*64)
+    	ctx.drawImage(this.tiles[this.map[this.index[y]][x]], x*64, (y-1)*64 + this.advance)
     }
-    //if(this.cicle % 2 == 0){
-    this.e_time = new Date().getTime()
-    var diference = this.e_time - this.s_time
-    if(this.e_time >= this.s_time + 100){
+    this.advance++
+    if(this.advance >= 64){
 	this.index.pop()
 	var new_row = Background.wrap_index((this.index[0]-1), this.map.length)
         this.random_map(new_row)	
 	this.index.unshift(new_row)
-        this.s_time = new Date().getTime()
+	this.advance = 0
     }
-    this.cicle++
 }
 
 Background.wrap_index = function(number, max_number){
