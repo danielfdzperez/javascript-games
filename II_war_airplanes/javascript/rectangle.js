@@ -7,6 +7,11 @@ function Rectangle(x, y, width, height, ix, iy){
 } 
 
 Rectangle.prototype.update_position = function(x, y){
-    this.pos.x = x + this.increment.x
-    this.pos.y = y + this.increment.y
+    if(this.constructor.name == KamikazeEnemy){
+       this.pos.x = (x + this.increment.x) * 0
+       this.pos.y = (y + this.increment.y) * 0
+    }else{
+       this.pos.x = x + this.increment.x
+       this.pos.y = y + this.increment.y
+    }
 }

@@ -1,13 +1,14 @@
 Player.prototype = new GameObject
 Player.prototype.constructor = Player
 
-Player.image = new Img("img/player-sprite.png", 65, 65, 3)
+//Player.image = new Img(false, "img/player-sprite.png", 65, 65, 3)
 function Player(px, py, sx, sy, ax, ay){
     GameObject.call(this, px, py, sx, sy, ax, ay)
     this.rectangles.push(new Rectangle(px, py, 37.5, 17, 13, 40))
     this.rectangles.push(new Rectangle(px, py, 59, 22, 3, 17))
     this.rectangles.push(new Rectangle(px, py, 10, 2, 28, 14))
     this.temp_shot = 1
+    this.image_name = "player_1"
 }
 
 Player.prototype.action = function(events, world){

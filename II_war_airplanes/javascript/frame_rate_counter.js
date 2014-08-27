@@ -22,7 +22,7 @@ FrameRateCounter.prototype.count_frames = function(){
 	this.last_frame_count = this.frame_ctr
 	this.frame_ctr = 0
 	this.frame_last = date_temp.getTime()
-	console.log(this.last_frame_count)
+	//console.log(this.last_frame_count)
     }
     delete date_temp
 }

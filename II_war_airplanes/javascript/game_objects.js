@@ -7,7 +7,17 @@ function GameObject(px, py, sx, sy, ax, ay){
 
     this.giro = 0
     this.img_mv = 0
+}
 
+GameObject.image_stack = new Img(true)
+
+GameObject.load_images = function(){
+    GameObject.image_stack.add_to_stack("img/player-sprite.png", 65, 65, 3, "player_1")
+    GameObject.image_stack.add_to_stack("img/attack-enemy-sprite.png", 32, 32, 3, "attack_enemy")
+    GameObject.image_stack.add_to_stack("img/kamikaze-enemy-sprite.png", 32, 32, 3, "kamikaze_enemy")
+    GameObject.image_stack.add_to_stack("img/explosion-sprite.png", 65, 65, 7, "big_explosion")
+    GameObject.image_stack.add_to_stack("img/player-shot-1.png", 9, 20, 1, "shot_1")
+    console.log(GameObject.image_stack)
 }
 
 GameObject.prototype.draw = function(ctx){
@@ -24,9 +34,14 @@ GameObject.prototype.draw = function(ctx){
     //ctx.drawImage(this.img, this.img_mv%3*65, 0, 65, 65, -65/2, -65/2, 65, 65)
     //ctx.restore()
 
-    ctx.drawImage(this.image(), this.img_mv%this.image_n_sprites()*this.image_measures("width"), 0, 
-	    this.image_measures("width"), this.image_measures("height"), this.pos.x, this.pos.y, 
-	    this.image_measures("width"), this.image_measures("height"))
+    //ctx.drawImage(this.image(), this.img_mv%this.image_n_sprites()*this.image_measures("width"), 0, 
+//	    this.image_measures("width"), this.image_measures("height"), this.pos.x, this.pos.y, 
+//	    this.image_measures("width"), this.image_measures("height"))
+    ctx.drawImage(GameObject.image_stack.stack[this.image_name].image, 
+	    this.img_mv%GameObject.image_stack.stack[this.image_name].n_sprites*GameObject.image_stack.stack[this.image_name].width, 0, 
+	    GameObject.image_stack.stack[this.image_name].width, GameObject.image_stack.stack[this.image_name].height, 
+	    this.pos.x, this.pos.y, 
+	    GameObject.image_stack.stack[this.image_name].width, GameObject.image_stack.stack[this.image_name].height)
     this.img_mv++
 }
 
@@ -45,15 +60,15 @@ GameObject.prototype.image_measures = function(measure){
     }
 }
 
-GameObject.prototype.image_n_sprites = function(){
-    return eval(this.constructor.name + ".image.n_sprites")
-}
+//GameObject.prototype.image_n_sprites = function(){
+  //  return eval(this.constructor.name + ".image.n_sprites")
+//}
 
 GameObject.prototype.collision = function(obj){
     var collision = false
     for(var i=0; i<this.rectangles.length; i++)
 	for(var j=0; j<obj.rectangles.length; j++)
-	    if(this.rectangles[i].pos.x < obj.rectangles[i].pos.x + obj.rectangles[j].width &&
+	    if(this.rectangles[i].pos.x < obj.rectangles[j].pos.x + obj.rectangles[j].width &&
 		    this.rectangles[i].pos.x + this.rectangles[i].width > obj.rectangles[j].pos.x &&
 		    this.rectangles[i].pos.y < obj.rectangles[j].pos.y + obj.rectangles[j].height &&
 		    this.rectangles[i].pos.y + this.rectangles[i].height > obj.rectangles[j].pos.y)
