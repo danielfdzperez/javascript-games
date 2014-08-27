@@ -9,8 +9,9 @@ function Level(world){
 
 Level.prototype.create_new_enemy = function(){
     if(this.enemies_dead < this.max_enemies && this.current_enemies < this.max_current_enemies){
-       //switch(Math.floor((Math.random() * 2))){
-       switch(1){
+       switch(Math.floor((Math.random() * 3))){
+       //switch(1){
+	   case 2:
 	   case 0:
 	       var squad = Math.floor((Math.random() * 4))
 	       var x = Math.floor((Math.random() * 400) + 10)
@@ -37,7 +38,7 @@ Level.prototype.create_new_enemy = function(){
 			   y = 0
 			   x = Math.floor((Math.random() * 200))
 			   vy = vx = 10
-			   this.world.new_kamikaze_enemy(x, y, vx, vy, 0, 0, "kamikaze_enemy")
+			   this.world.new_kamikaze_enemy(x, y, vx, vy, 0, 0, "kamikaze_enemy_0")
 			   break;
 		       case 1:
 			   y = 0
@@ -45,19 +46,19 @@ Level.prototype.create_new_enemy = function(){
 			   x = 490
 			   vy = 10
 			   vx = -10
-			   this.world.new_kamikaze_enemy(x, y, vx, vy, 0, 0, "kamikaze_enemy")
+			   this.world.new_kamikaze_enemy(x, y, vx, vy, 0, 0, "kamikaze_enemy_1")
 			   break;
 		       case 2:
 			   x = Math.floor((Math.random() * 200))
 			   y = 490
 			   vx = 10
 			   vy = -10
-			   this.world.new_kamikaze_enemy(x, y, vx, vy, 0, 0, "kamikaze_enemy")
+			   this.world.new_kamikaze_enemy(x, y, vx, vy, 0, 0, "kamikaze_enemy_2")
 			   break;
 		       case 3:
 			   y = x = 500
 			   vy = vx = -10
-			   this.world.new_kamikaze_enemy(x, y, vx, vy, 0, 0, "kamikaze_enemy")
+			   this.world.new_kamikaze_enemy(x, y, vx, vy, 0, 0, "kamikaze_enemy_3")
 			   break;
 		       this.current_enemies++
 		   }

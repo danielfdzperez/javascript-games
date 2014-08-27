@@ -7,7 +7,7 @@ function init(){
 
     world.new_player(200, 400, 0, 0, 0, 0)
     world.new_player_shot(100, 100, 0, 0, 0, 0)
-    world.new_kamikaze_enemy(300, 100, 0, 0, 0, 0, "kamikaze_enemy")
+    world.new_kamikaze_enemy(300, 100, 0, 0, 0, 0, "kamikaze_enemy_0")
     game_loop()
 }
 
