@@ -13,6 +13,8 @@ GameObject.image_stack = new Img(true)
 
 GameObject.load_images = function(){
     GameObject.image_stack.add_to_stack("img/player-sprite.png", 65, 65, 3, "player_1")
+    GameObject.image_stack.add_to_stack("img/player-live.png", 32, 32, 1, "player_1_live")
+    GameObject.image_stack.add_to_stack("img/player-shot-1.png", 9, 20, 1, "shot_1")
     GameObject.image_stack.add_to_stack("img/attack-enemy-sprite.png", 32, 32, 3, "attack_enemy")
     GameObject.image_stack.add_to_stack("img/kamikaze-enemy-sprite.png", 32, 32, 3, "kamikaze_enemy")
     GameObject.image_stack.add_to_stack("img/kamikaze-enemy-sprite-0.png", 32, 32, 3, "kamikaze_enemy_0")
@@ -20,7 +22,7 @@ GameObject.load_images = function(){
     GameObject.image_stack.add_to_stack("img/kamikaze-enemy-sprite-2.png", 32, 32, 3, "kamikaze_enemy_2")
     GameObject.image_stack.add_to_stack("img/kamikaze-enemy-sprite-3.png", 32, 32, 3, "kamikaze_enemy_3")
     GameObject.image_stack.add_to_stack("img/explosion-sprite.png", 65, 65, 7, "big_explosion")
-    GameObject.image_stack.add_to_stack("img/player-shot-1.png", 9, 20, 1, "shot_1")
+    GameObject.image_stack.add_to_stack("img/enemy-shot.png", 9, 9, 1, "enemy_shot")
     console.log(GameObject.image_stack)
 }
 

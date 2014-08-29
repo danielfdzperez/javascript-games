@@ -2,13 +2,16 @@ Player.prototype = new GameObject
 Player.prototype.constructor = Player
 
 //Player.image = new Img(false, "img/player-sprite.png", 65, 65, 3)
-function Player(px, py, sx, sy, ax, ay){
+function Player(px, py, number, sx, sy, ax, ay){
     GameObject.call(this, px, py, sx, sy, ax, ay)
     this.rectangles.push(new Rectangle(px, py, 37.5, 17, 13, 40))
     this.rectangles.push(new Rectangle(px, py, 59, 22, 3, 17))
     this.rectangles.push(new Rectangle(px, py, 10, 2, 28, 14))
     this.temp_shot = 1
+    this.number = number
     this.image_name = "player_1"
+    this.lives = 3
+    this.alive = true
 }
 
 Player.prototype.action = function(events, world){
@@ -60,4 +63,9 @@ Player.prototype.shot = function(world){
     }
     else
 	this.temp_shot++
+}
+
+Player.prototype.draw_lives = function(ctx){
+   for(var i=0; i<this.lives; i++)
+       ctx.drawImage(GameObject.image_stack.stack["player_1_live"].image, i*32+10, (0+this.number-1)*32) 
 }
