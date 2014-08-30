@@ -15,31 +15,31 @@ function Player(px, py, number, sx, sy, ax, ay){
 }
 
 Player.prototype.action = function(events, world){
-    if (87 in events.keys_up || 38 in events.keys_up){  // up
+    if ((87 in events.keys_up && this.number == 1) || (38 in events.keys_up && this.number == 2)){  // up
 	this.acceleration.y = 0 
 	this.speed.y = 0 
     }
-    if (83 in events.keys_up || 40 in events.keys_up){  // down
+    if ((83 in events.keys_up && this.number == 1) || (40 in events.keys_up && this.number == 2)){  // down
 	this.acceleration.y = 0 
 	this.speed.y = 0 
     }
-    if (65 in events.keys_up || 37 in events.keys_up){  // left
+    if ((65 in events.keys_up && this.number == 1) || (37 in events.keys_up && this.number == 2)){  // left
 	this.acceleration.x = 0 
 	this.speed.x = 0 
     }
-    if (68 in events.keys_up || 39 in events.keys_up){  // right
+    if ((68 in events.keys_up && this.number == 1) || (39 in events.keys_up && this.number == 2)){  // right
 	this.acceleration.x = 0 
 	this.speed.x = 0 
     }
 	
 	    /*If keys down*/
-    if (87 in events.keys_down || 38 in events.keys_down)  // up
+    if ((87 in events.keys_down && this.number == 1) || (38 in events.keys_down && this.number == 2))  // up
 	this.acceleration.y = -10 
-    if (83 in events.keys_down || 40 in events.keys_down)  // down
+    if ((83 in events.keys_down && this.number == 1) || (40 in events.keys_down && this.number == 2))  // down
 	this.acceleration.y = 10 
-    if (65 in events.keys_down || 37 in events.keys_down)  // left
+    if ((65 in events.keys_down && this.number == 1) || (37 in events.keys_down && this.number == 2))  // left
 	this.acceleration.x = -10 
-    if (68 in events.keys_down || 39 in events.keys_down)  // right
+    if ((68 in events.keys_down && this.number == 1) || (39 in events.keys_down && this.number == 2))  // right
 	this.acceleration.x = 10 
 }
 

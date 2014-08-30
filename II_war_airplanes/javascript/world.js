@@ -45,13 +45,17 @@ World.prototype.start = function(){
     GameObject.load_images()
     this.background.load_tiles()
     for(var i=0; i<this.n_players; i++)
-       world.new_player(150*(i+1), 400, i+1, 0, 0, 0, 0)
+       this.new_player(150*(i+1), 400, i+1, 0, 0, 0, 0)
 }
 
 /*Refresca los graficos*/
 World.prototype.refresh_graphics = function(){
    this.ctx.clearRect(0, 0, 500, 500)
+
    this.background.draw(this.ctx)
+   this.ctx.font = "20px Serif"
+   this.ctx.fillText("Level " + this.level.number, 400, 20, 400)
+   this.ctx.fillText("E_dead " + this.level.enemies_dead, 400, 40, 400)
 
    for(var i=0; i<this.players.length; i++){
        if(this.players[i].alive){
@@ -126,8 +130,9 @@ World.prototype.update_physics = function(){
     }
 
     /*Enemy shots*/
+    var shot_delete = false
     for(var i=0; i<this.enemy_shots.length; i++){
-       var shot_delete = false
+       shot_delete = false
        this.enemy_shots[i].update_physics(delta_time)
        for(var j=0; j<this.players.length; j++)
 	   if(this.players[j].alive && !shot_delete && this.enemy_shots[i].collision(this.players[j])){
@@ -138,7 +143,6 @@ World.prototype.update_physics = function(){
 	           this.players[j].alive = false	   
 	   }
        if(!shot_delete && this.enemy_shots[i].exit_screen(this.enemy_shots[i].pos)){
-	   this.enemy_shots.splice(i, 1)
 	   shot_delete = true
        }
        if(shot_delete)
@@ -155,6 +159,12 @@ World.prototype.update_physics = function(){
 
     this.enemy_shot()
     this.create_enemy()
+    this.level_up()
+}
+
+World.prototype.level_up = function(){
+    if(this.level.enemies_dead >= this.level.max_enemies)
+	this.level.new_level()
 }
 
 /*Comprueba si todos los jugadores estan muertos*/
@@ -169,11 +179,29 @@ World.prototype.end_game = function(){
        return false
 }
 
+/*Comprueba que jugadores estan vivos
+  Devuelve 2 si todos estan vivos
+  Devuelve -1 si estan tdos muertos
+  Devuelve el indice del jugador vivo
+ */
+World.prototype.players_alive = function(){
+    var player_alive = []
+    for(var i=0; i<this.players.length; i++)
+	if(this.players[i].alive)
+	    player_alive.push(i)
+    if(player_alive.length > 1)
+	return 2
+    else
+	if(player_alive.length < 1)
+	    player_alive.push(-1)
+    return player_alive[0]
+}
+
 /*Crea disparos de los enemigos*/
 World.prototype.enemy_shot = function(){
    for(var i=0; i<this.enemy_planes.length; i++)
       if(this.enemy_planes[i].constructor.name == "Attack_enemy")
-            this.enemy_planes[i].shoot(this.players[0], this)
+            this.enemy_planes[i].shoot(this.players, this)
 }
 
 /*Crea nuevos enemigos*/
@@ -190,6 +218,7 @@ World.prototype.events = function(){
     //if(87 == this.ev.last_key || 38 == this.ev.last_key || 83 == this.ev.last_key || 40 == this.ev.last_key || 
      //  65 == this.ev.last_key || 37 == this.ev.last_key || 68 == this.ev.last_key || 39 == this.ev.last_key){
     this.players[0].action(this.ev, this)
+    this.players[1].action(this.ev, this)
    // }
 }
 

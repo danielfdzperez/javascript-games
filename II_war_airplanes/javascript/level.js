@@ -7,6 +7,13 @@ function Level(world){
     this.world = world
 }
 
+Level.prototype.new_level = function(){
+    this.number ++
+    this.max_enemies += 7
+    this.max_current_enemies += 5
+    this.enemies_dead = 0
+}
+
 Level.prototype.create_new_enemy = function(){
     if(this.enemies_dead < this.max_enemies && this.current_enemies < this.max_current_enemies){
        switch(Math.floor((Math.random() * 3))){
