@@ -9,9 +9,12 @@ function World(id, n_players){
     this.explosions       = [] //Explosiones
     this.background = new Background()    //Gestiona el fondo
     this.ev = new Events()                //Gestiona los eventos
-    this.ev.enable_inputs()               //Activa los eventos
+    //this.ev.enable_inputs()               //Activa los eventos
     this.level = new Level(this)          //Gestiona el nivel
     this.delta = new FrameRateCounter(15) //Gestiona el tiempo delta FPS
+    this.end = false
+    this.menu = new Menu()
+    this.menu_on = false
 }
 
 /*Agrega a su correspondiente array el nuevo objeto al mundo*/
@@ -41,11 +44,24 @@ World.prototype.new_explosion = function(pos, speed, accel){
 }
 
 /*Carga todo lo necesario*/
-World.prototype.start = function(){
-    GameObject.load_images()
-    this.background.load_tiles()
+World.prototype.start = function(restart){
+    if(!restart){
+       GameObject.load_images()
+       this.background.load_tiles()
+    }
+    this.level.new_level()
     for(var i=0; i<this.n_players; i++)
        this.new_player(150*(i+1), 400, i+1, 0, 0, 0, 0)
+    this.end = false
+    this.menu_on = false
+}
+
+World.prototype.delete_obj = function(){
+    this.players.splice(0, this.players.length)
+    this.enemy_planes.splice(0, this.enemy_planes.length)
+    this.explosions.splice(0, this.explosions.length)
+    this.enemy_shots.splice(0, this.enemy_shots.length)
+    this.players_shots.splice(0, this.players_shots.length)
 }
 
 /*Refresca los graficos*/
@@ -53,7 +69,7 @@ World.prototype.refresh_graphics = function(){
    this.ctx.clearRect(0, 0, 500, 500)
 
    this.background.draw(this.ctx)
-   this.ctx.font = "20px Serif"
+   this.ctx.font = "20px Arial"
    this.ctx.fillText("Level " + this.level.number, 400, 20, 400)
    this.ctx.fillText("E_dead " + this.level.enemies_dead, 400, 40, 400)
 
@@ -87,12 +103,15 @@ World.prototype.update_physics = function(){
        if(this.players[i].alive){
            this.players[i].update_physics(delta_time)
            this.players[i].shot(this)
+	   if(this.players[i].startup)
+	       this.players[i].revivir()
            for(var j=0; j<this.enemy_planes.length; j++)
-                  if(this.players[i].collision(this.enemy_planes[j])){
+                  if(!this.players[i].startup && this.players[i].collision(this.enemy_planes[j])){
     	          this.new_explosion(this.players[i].pos, new Coord(0, -1), new Coord(0))
     	          this.new_explosion(this.enemy_planes[j].pos, this.enemy_planes[j].speed, this.enemy_planes[j].acceleration)
     	          this.enemy_planes.splice(j, 1)
     	          this.players[i].lives--
+		  this.players[i].regenerate()
     	          this.level.current_enemies--
     	          if(this.players[i].lives <= 0)
     		      this.players[i].alive = false
@@ -135,9 +154,10 @@ World.prototype.update_physics = function(){
        shot_delete = false
        this.enemy_shots[i].update_physics(delta_time)
        for(var j=0; j<this.players.length; j++)
-	   if(this.players[j].alive && !shot_delete && this.enemy_shots[i].collision(this.players[j])){
+	   if(!this.players[j].startup && this.players[j].alive && !shot_delete && this.enemy_shots[i].collision(this.players[j])){
 	       this.new_explosion(this.players[j].pos, this.players[j].speed, new Coord(0))
 	       this.players[j].lives--
+	       this.players[j].regenerate()
 	       shot_delete = true
 	       if(this.players[j].lives <= 0)
 	           this.players[j].alive = false	   
@@ -164,7 +184,7 @@ World.prototype.update_physics = function(){
 
 World.prototype.level_up = function(){
     if(this.level.enemies_dead >= this.level.max_enemies)
-	this.level.new_level()
+	this.level.level_up()
 }
 
 /*Comprueba si todos los jugadores estan muertos*/
@@ -214,16 +234,33 @@ World.prototype.create_enemy = function(){
 }
 
 /*Gestiona los eventos*/
-World.prototype.events = function(){
-    //if(87 == this.ev.last_key || 38 == this.ev.last_key || 83 == this.ev.last_key || 40 == this.ev.last_key || 
-     //  65 == this.ev.last_key || 37 == this.ev.last_key || 68 == this.ev.last_key || 39 == this.ev.last_key){
+World.prototype.events = function(e){
     this.players[0].action(this.ev, this)
-    this.players[1].action(this.ev, this)
-   // }
+    if(this.n_players > 1)
+       this.players[1].action(this.ev, this)
+
+    //if(this.end && 13 in this.ev.keys_down)
+	
 }
 
 /*Muestra fin del juego*/
 World.prototype.game_over = function(){
     this.ctx.font = "50px Serif"
     this.ctx.fillText("Game Over", 100, 250, 400)
+    this.ctx.font = "20px Arial"
+    this.ctx.fillText("Press enter to continue", 100, 450, 400)
+    this.end = true
+    this.n_players = 0
+}
+
+World.prototype.show_menu = function(){
+    this.menu.draw(this.ctx) 
+    this.menu_on = true
+}
+
+World.prototype.mouse_press = function(e){
+   if(this.menu_on){
+      var mouse = {pos: new Coord((e.pageX-this.canvas.offsetLeft), (e.pageY-this.canvas.offsetTop))}
+      this.n_players = this.menu.click(mouse.pos.x, mouse.pos.y)
+   }
 }

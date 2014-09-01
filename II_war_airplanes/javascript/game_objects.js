@@ -1,3 +1,4 @@
+var test = false
 function GameObject(px, py, sx, sy, ax, ay){
     this.pos = new Coord(px,py)
     this.speed = new Coord(sx, sy)
@@ -13,9 +14,11 @@ GameObject.image_stack = new Img(true)
 
 GameObject.load_images = function(){
     GameObject.image_stack.add_to_stack("img/player-sprite.png", 65, 65, 3, "player_1")
+    GameObject.image_stack.add_to_stack("img/player2-sprite.png", 65, 65, 3, "player_2")
     GameObject.image_stack.add_to_stack("img/player-live.png", 32, 32, 1, "player_1_live")
     GameObject.image_stack.add_to_stack("img/player-shot-1.png", 9, 20, 1, "shot_1")
     GameObject.image_stack.add_to_stack("img/attack-enemy-sprite.png", 32, 32, 3, "attack_enemy")
+    GameObject.image_stack.add_to_stack("img/loop-enemy-sprite.png", 32, 32, 5, "loop_enemy")
     GameObject.image_stack.add_to_stack("img/kamikaze-enemy-sprite.png", 32, 32, 3, "kamikaze_enemy")
     GameObject.image_stack.add_to_stack("img/kamikaze-enemy-sprite-0.png", 32, 32, 3, "kamikaze_enemy_0")
     GameObject.image_stack.add_to_stack("img/kamikaze-enemy-sprite-1.png", 32, 32, 3, "kamikaze_enemy_1")
@@ -35,8 +38,9 @@ GameObject.prototype.draw = function(ctx){
     //ctx.strokeRect(-65/2+28, -65/2+14, 10, 2)
     //ctx.strokeRect(-65/2+3, -65/2+17, 59, 22)
     //ctx.strokeRect(-65/2+13, -65/2+40, 37.5, 17)
-    for(var i=0; i<this.rectangles.length; i++)
-        ctx.strokeRect(this.rectangles[i].pos.x, this.rectangles[i].pos.y, this.rectangles[i].width, this.rectangles[i].height)
+    if(test)
+       for(var i=0; i<this.rectangles.length; i++)
+           ctx.strokeRect(this.rectangles[i].pos.x, this.rectangles[i].pos.y, this.rectangles[i].width, this.rectangles[i].height)
     //ctx.drawImage(this.img, this.img_mv%3*65, 0, 65, 65, -65/2, -65/2, 65, 65)
     //ctx.restore()
 

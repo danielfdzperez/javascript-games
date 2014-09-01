@@ -7,11 +7,19 @@ function Level(world){
     this.world = world
 }
 
-Level.prototype.new_level = function(){
+Level.prototype.level_up = function(){
     this.number ++
     this.max_enemies += 7
     this.max_current_enemies += 5
     this.enemies_dead = 0
+}
+
+Level.prototype.new_level = function(){
+    this.number = 1             //El nivel
+    this.max_enemies = this.number*10//Máximo de enemigos por nivel
+    this.enemies_dead = 0         //Los enemigos muertos
+    this.current_enemies = 0
+    this.max_current_enemies = 10
 }
 
 Level.prototype.create_new_enemy = function(){
@@ -21,8 +29,8 @@ Level.prototype.create_new_enemy = function(){
 	   case 2:
 	   case 0:
 	       var squad = Math.floor((Math.random() * 4))
-	       var x = Math.floor((Math.random() * 400) + 10)
-	       var vx = Math.floor((Math.random() * 1))
+	       var x = Math.floor((Math.random() * 300) + 100)
+	       var vx = 0//Math.floor((Math.random() * 1))
 	       //vy = Math.floor((Math.random() * 5) + 5)
 	       var vy = 7
 	       for(var i=0; i<squad; i++){

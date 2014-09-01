@@ -18,3 +18,15 @@ Events.prototype.enable_inputs = function(){
 	    delete that.keys_down[e.keyCode] 
 	    }, false)
 }
+
+Events.prototype.add_key_down = function(e){
+     this.keys_down[e.keyCode] = true 
+     this.last_key = e.keyCode
+     delete this.keys_up[e.keyCode]
+}
+
+Events.prototype.add_key_up = function(e){
+    this.keys_up[e.keyCode] = true 
+    this.last_key = e.keyCode
+    delete this.keys_down[e.keyCode]
+}
