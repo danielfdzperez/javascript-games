@@ -6,6 +6,7 @@ function World(id, n_players){
     this.players_shots    = [] //Disparos de los jugadores
     this.enemy_planes     = [] //Aviones enemigos
     this.enemy_shots      = [] //Disparos enemigos
+    this.improvements     = [] //Mejoras
     this.explosions       = [] //Explosiones
     this.background = new Background()    //Gestiona el fondo
     this.ev = new Events()                //Gestiona los eventos
@@ -22,17 +23,24 @@ World.prototype.new_player = function(x, y, number, sx, sy, ax, ay){
     this.players.push(new Player(x, y, number, sx, sy, ax, ay))
 }
 
-World.prototype.new_player_shot = function(x, y, sx, sy, ax, ay){
-    this.players_shots.push(new PlayerShot(x, y, sx, sy, ax, ay))
+World.prototype.new_player_shot = function(x, y, sx, sy, ax, ay, player){
+    this.players_shots.push(new PlayerShot(x, y, sx, sy, ax, ay, player))
+}
+
+World.prototype.new_improvement = function(x, y, sx, sy, ax, ay){
+    this.improvements.push(new Improvement(x, y, sx, sy, ax, ay))
 }
 
 World.prototype.new_attack_enemy = function(x, y, sx, sy, ax, ay){
-    //this.attack_enemies.push(new Attack_enemy(x, y, sx, sy, ax, ay))
     this.enemy_planes.push(new Attack_enemy(x, y, sx, sy, ax, ay))
 }
 
 World.prototype.new_enemy_shot = function(x, y, sx, sy, ax, ay){
     this.enemy_shots.push(new EnemyShot(x, y, sx, sy, ax, ay))
+}
+
+World.prototype.new_loop_enemy = function(x, y, sx, sy, ax, ay){
+    this.enemy_planes.push(new LoopEnemy(x, y, sx, sy, ax, ay))
 }
 
 World.prototype.new_kamikaze_enemy = function(x, y, sx, sy, ax, ay, img){
@@ -71,13 +79,12 @@ World.prototype.refresh_graphics = function(){
    this.background.draw(this.ctx)
    this.ctx.font = "20px Arial"
    this.ctx.fillText("Level " + this.level.number, 400, 20, 400)
-   this.ctx.fillText("E_dead " + this.level.enemies_dead, 400, 40, 400)
+   //this.ctx.fillText("E_dead " + this.level.enemies_dead, 400, 40, 400)
 
    for(var i=0; i<this.players.length; i++){
-       if(this.players[i].alive){
+       if(this.players[i].alive)
           this.players[i].draw(this.ctx)
-          this.players[i].draw_lives(this.ctx)
-       }
+       this.players[i].draw_info(this.ctx)
    }
 
    for(var i=0; i<this.enemy_planes.length; i++)
@@ -91,6 +98,9 @@ World.prototype.refresh_graphics = function(){
 
    for(var i=0; i<this.explosions.length; i++)
        this.explosions[i].draw(this.ctx)
+
+   for(var i=0; i<this.improvements.length; i++)
+       this.improvements[i].draw(this.ctx)
 }
 
 /*Actualiza las fisicas y comprueba colisiones*/
@@ -101,10 +111,11 @@ World.prototype.update_physics = function(){
     /*Player*/
     for(var i=0; i<this.players.length; i++){
        if(this.players[i].alive){
+	   this.players[i].extra_live()
            this.players[i].update_physics(delta_time)
            this.players[i].shot(this)
 	   if(this.players[i].startup)
-	       this.players[i].revivir()
+	       this.players[i].restart()
            for(var j=0; j<this.enemy_planes.length; j++)
                   if(!this.players[i].startup && this.players[i].collision(this.enemy_planes[j])){
     	          this.new_explosion(this.players[i].pos, new Coord(0, -1), new Coord(0))
@@ -135,6 +146,7 @@ World.prototype.update_physics = function(){
         for(var j=0; j<this.enemy_planes.length; j++)
            if(!shot_delete && this.players_shots[i].collision(this.enemy_planes[j])){
 	       this.new_explosion(this.enemy_planes[j].pos, this.enemy_planes[j].speed, this.enemy_planes[j].acceleration)
+	       this.players[this.players_shots[i].player-1].score += this.enemy_planes[j].score
 	       this.enemy_planes.splice(j, 1)
 	       this.players_shots.splice(i, 1)
 	       this.level.current_enemies--
@@ -183,8 +195,11 @@ World.prototype.update_physics = function(){
 }
 
 World.prototype.level_up = function(){
-    if(this.level.enemies_dead >= this.level.max_enemies)
+    if(this.level.enemies_dead >= this.level.max_enemies){
 	this.level.level_up()
+        for(var i=0; i<this.players.length; i++)
+	    this.players[i].revive()
+    }
 }
 
 /*Comprueba si todos los jugadores estan muertos*/
@@ -220,7 +235,7 @@ World.prototype.players_alive = function(){
 /*Crea disparos de los enemigos*/
 World.prototype.enemy_shot = function(){
    for(var i=0; i<this.enemy_planes.length; i++)
-      if(this.enemy_planes[i].constructor.name == "Attack_enemy")
+      if(this.enemy_planes[i].constructor.name != "KamikazeEnemy")
             this.enemy_planes[i].shoot(this.players, this)
 }
 

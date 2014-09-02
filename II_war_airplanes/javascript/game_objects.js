@@ -1,9 +1,10 @@
 var test = false
-function GameObject(px, py, sx, sy, ax, ay){
+function GameObject(px, py, sx, sy, ax, ay, score){
     this.pos = new Coord(px,py)
     this.speed = new Coord(sx, sy)
     this.acceleration = new Coord(ax, ay)
     this.rectangles = []
+    this.score = score || 0
 
 
     this.giro = 0
@@ -16,7 +17,9 @@ GameObject.load_images = function(){
     GameObject.image_stack.add_to_stack("img/player-sprite.png", 65, 65, 3, "player_1")
     GameObject.image_stack.add_to_stack("img/player2-sprite.png", 65, 65, 3, "player_2")
     GameObject.image_stack.add_to_stack("img/player-live.png", 32, 32, 1, "player_1_live")
+    GameObject.image_stack.add_to_stack("img/player2-live.png", 32, 32, 1, "player_2_live")
     GameObject.image_stack.add_to_stack("img/player-shot-1.png", 9, 20, 1, "shot_1")
+    GameObject.image_stack.add_to_stack("img/shot-improvement.png", 24, 25, 1, "shot_improvement")
     GameObject.image_stack.add_to_stack("img/attack-enemy-sprite.png", 32, 32, 3, "attack_enemy")
     GameObject.image_stack.add_to_stack("img/loop-enemy-sprite.png", 32, 32, 5, "loop_enemy")
     GameObject.image_stack.add_to_stack("img/kamikaze-enemy-sprite.png", 32, 32, 3, "kamikaze_enemy")

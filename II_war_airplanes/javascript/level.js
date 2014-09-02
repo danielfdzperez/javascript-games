@@ -24,8 +24,8 @@ Level.prototype.new_level = function(){
 
 Level.prototype.create_new_enemy = function(){
     if(this.enemies_dead < this.max_enemies && this.current_enemies < this.max_current_enemies){
-       switch(Math.floor((Math.random() * 3))){
-       //switch(1){
+       switch(Math.floor((Math.random() * 4))){
+       //switch(3){
 	   case 2:
 	   case 0:
 	       var squad = Math.floor((Math.random() * 4))
@@ -77,6 +77,13 @@ Level.prototype.create_new_enemy = function(){
 			   break;
 		       this.current_enemies++
 		   }
+	       break;
+	   case 3:
+	       var y = 0
+	       var x = Math.floor((Math.random() * 300) + 100)
+	       var sy = 10
+	       var ay = 1
+	       this.world.new_loop_enemy(x, 0, 0, 5, 0, ay)
 	       break;
        }
     }

@@ -15,6 +15,7 @@ function Player(px, py, number, sx, sy, ax, ay){
     this.alive = true
     this.startup = false
     this.startup_step = 1
+    this.next_extra_live = 1
 }
 
 Player.prototype.action = function(events, world){
@@ -57,16 +58,17 @@ Player.prototype.update_pos = function(delta){
 
 Player.prototype.shot = function(world){
     if(this.temp_shot % 15 == 0){
-	world.new_player_shot(this.pos.x + 30, this.pos.y + 10, 0, -15, 0, 0)
+	world.new_player_shot(this.pos.x + 30, this.pos.y + 10, 0, -15, 0, 0, this.number)
 	this.temp_shot = 1
     }
     else
 	this.temp_shot++
 }
 
-Player.prototype.draw_lives = function(ctx){
+Player.prototype.draw_info = function(ctx){
+   ctx.fillText("Score: " + this.score, 200, 20+((this.number-1)*32), 100)
    for(var i=0; i<this.lives; i++)
-       ctx.drawImage(GameObject.image_stack.stack["player_1_live"].image, i*32+10, (0+this.number-1)*32) 
+       ctx.drawImage(GameObject.image_stack.stack["player_" + this.number + "_live"].image, i*32+10, (0+this.number-1)*32) 
 }
 
 Player.prototype.draw = function(ctx){
@@ -80,11 +82,26 @@ Player.prototype.regenerate = function(){
     this.startup = true
 }
 
-Player.prototype.revivir = function(){
+Player.prototype.restart = function(){
     if(this.startup_step % 20 == 0){
         this.startup = false
         this.startup_step = 1
      }
      else
         this.startup_step++
+}
+
+Player.prototype.extra_live = function(){
+    if(this.score >= 5000 * this.next_extra_live){
+        this.lives ++
+        this.next_extra_live ++
+    }
+}
+
+Player.prototype.revive = function(){
+    if(!this.alive){
+       this.alive = true
+       this.lives ++
+       this.regenerate()
+    }
 }
