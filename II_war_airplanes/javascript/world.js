@@ -4,8 +4,10 @@ function World(id, n_players){
     this.n_players        = n_players // El numero de jugadores que hay en el mundo
     this.players          = [] //Jugadores
     this.players_shots    = [] //Disparos de los jugadores
-    this.enemy_planes     = [] //Aviones enemigos
+    //this.enemies     = [] //Aviones enemigos
     this.enemy_shots      = [] //Disparos enemigos
+    //this.enemy_ships      = [] //Barcos enemigos
+    this.enemies          = [] 
     this.improvements     = [] //Mejoras
     this.explosions       = [] //Explosiones
     this.background = new Background()    //Gestiona el fondo
@@ -23,28 +25,32 @@ World.prototype.new_player = function(x, y, number, sx, sy, ax, ay){
     this.players.push(new Player(x, y, number, sx, sy, ax, ay))
 }
 
-World.prototype.new_player_shot = function(x, y, sx, sy, ax, ay, player){
-    this.players_shots.push(new PlayerShot(x, y, sx, sy, ax, ay, player))
+World.prototype.new_player_shot = function(x, y, sx, sy, ax, ay, player, t){
+    this.players_shots.push(new PlayerShot(x, y, sx, sy, ax, ay, player, t))
 }
 
-World.prototype.new_improvement = function(x, y, sx, sy, ax, ay){
-    this.improvements.push(new Improvement(x, y, sx, sy, ax, ay))
+World.prototype.new_improvement = function(x, y, sx, sy, ax, ay, type){
+    this.improvements.push(new Improvement(x, y, sx, sy, ax, ay, type))
 }
 
-World.prototype.new_attack_enemy = function(x, y, sx, sy, ax, ay){
-    this.enemy_planes.push(new Attack_enemy(x, y, sx, sy, ax, ay))
+World.prototype.new_attack_enemy = function(x, y, sx, sy, ax, ay, improvement){
+    this.enemies.push(new Attack_enemy(x, y, sx, sy, ax, ay, improvement))
 }
 
 World.prototype.new_enemy_shot = function(x, y, sx, sy, ax, ay){
     this.enemy_shots.push(new EnemyShot(x, y, sx, sy, ax, ay))
 }
 
-World.prototype.new_loop_enemy = function(x, y, sx, sy, ax, ay){
-    this.enemy_planes.push(new LoopEnemy(x, y, sx, sy, ax, ay))
+World.prototype.new_loop_enemy = function(x, y, sx, sy, ax, ay, improvement){
+    this.enemies.push(new LoopEnemy(x, y, sx, sy, ax, ay, improvement))
 }
 
-World.prototype.new_kamikaze_enemy = function(x, y, sx, sy, ax, ay, img){
-    this.enemy_planes.push(new KamikazeEnemy(x, y, sx, sy, ax, ay, img))
+World.prototype.new_kamikaze_enemy = function(x, y, sx, sy, ax, ay, img, improvement){
+    this.enemies.push(new KamikazeEnemy(x, y, sx, sy, ax, ay, img, improvement))
+}
+
+World.prototype.new_enemy_ship = function(place, improvement){
+    this.enemies.push(new EnemyShip(place, improvement))
 }
 
 World.prototype.new_explosion = function(pos, speed, accel){
@@ -66,29 +72,31 @@ World.prototype.start = function(restart){
 
 World.prototype.delete_obj = function(){
     this.players.splice(0, this.players.length)
-    this.enemy_planes.splice(0, this.enemy_planes.length)
+    this.enemies.splice(0, this.enemies.length)
     this.explosions.splice(0, this.explosions.length)
     this.enemy_shots.splice(0, this.enemy_shots.length)
     this.players_shots.splice(0, this.players_shots.length)
+    this.improvements.splice(0, this.improvements.length)
 }
 
 /*Refresca los graficos*/
 World.prototype.refresh_graphics = function(){
    this.ctx.clearRect(0, 0, 500, 500)
 
+
    this.background.draw(this.ctx)
+   for(var i=0; i<this.enemies.length; i++)
+       this.enemies[i].draw(this.ctx)
    this.ctx.font = "20px Arial"
    this.ctx.fillText("Level " + this.level.number, 400, 20, 400)
    //this.ctx.fillText("E_dead " + this.level.enemies_dead, 400, 40, 400)
+
 
    for(var i=0; i<this.players.length; i++){
        if(this.players[i].alive)
           this.players[i].draw(this.ctx)
        this.players[i].draw_info(this.ctx)
    }
-
-   for(var i=0; i<this.enemy_planes.length; i++)
-       this.enemy_planes[i].draw(this.ctx)
 
    for(var i=0; i<this.players_shots.length; i++)
        this.players_shots[i].draw(this.ctx)
@@ -114,71 +122,95 @@ World.prototype.update_physics = function(){
 	   this.players[i].extra_live()
            this.players[i].update_physics(delta_time)
            this.players[i].shot(this)
+	   for(var j=0; j<this.improvements.length; j++){
+	       if(this.players[i].collision(this.improvements[j])){
+		   this.players[i].improve(this.improvements[j].type, 1)
+		   this.improvements.splice(j, 1)
+	       }
+	   }
 	   if(this.players[i].startup)
 	       this.players[i].restart()
-           for(var j=0; j<this.enemy_planes.length; j++)
-                  if(!this.players[i].startup && this.players[i].collision(this.enemy_planes[j])){
-    	          this.new_explosion(this.players[i].pos, new Coord(0, -1), new Coord(0))
-    	          this.new_explosion(this.enemy_planes[j].pos, this.enemy_planes[j].speed, this.enemy_planes[j].acceleration)
-    	          this.enemy_planes.splice(j, 1)
-    	          this.players[i].lives--
-		  this.players[i].regenerate()
-    	          this.level.current_enemies--
-    	          if(this.players[i].lives <= 0)
-    		      this.players[i].alive = false
-    	   }
+	   //var impact = false
+           for(var j=0; j<this.enemies.length /*&& !impact*/; j++)
+                  if(!this.players[i].startup && this.enemies[j].constructor.name != "EnemyShip" &&  
+			  this.players[i].collision(this.enemies[j])){
+		      if(this.enemies[j].dead(this))
+    	                 this.enemies.splice(j, 1)
+    	             this.new_explosion(this.players[i].pos, new Coord(0, -1), new Coord(0))
+    	             this.players[i].damage()
+    	             this.level.current_enemies--
+		     //impact = true
+    	          }
        }
     }
 
     /*Attack enemies*/
-    for(var i=0; i<this.enemy_planes.length; i++){
-       this.enemy_planes[i].update_physics(delta_time)
-       if(this.enemy_planes[i].exit_screen(this.enemy_planes[i].pos)){
-	   this.enemy_planes.splice(i, 1)
+    for(var i=0; i<this.enemies.length; i++){
+       this.enemies[i].update_physics(delta_time)
+       if(this.enemies[i].exit_screen(this.enemies[i].pos)){
+           if(this.enemies[i].constructor.name == "EnemyShip")
+	      this.level.ship = false
+	   this.enemies.splice(i, 1)
+	   i--
 	   this.level.current_enemies--
        }
     }
 
-    /*Player shots*/
-    for(var i=0; i<this.players_shots.length; i++){
-	var shot_delete = false
-	this.players_shots[i].update_physics(delta_time)
-        for(var j=0; j<this.enemy_planes.length; j++)
-           if(!shot_delete && this.players_shots[i].collision(this.enemy_planes[j])){
-	       this.new_explosion(this.enemy_planes[j].pos, this.enemy_planes[j].speed, this.enemy_planes[j].acceleration)
-	       this.players[this.players_shots[i].player-1].score += this.enemy_planes[j].score
-	       this.enemy_planes.splice(j, 1)
-	       this.players_shots.splice(i, 1)
-	       this.level.current_enemies--
-	       this.level.enemies_dead ++
-	       shot_delete = true
+    //for(var i=0; i<this.enemy_ships.length; i++){
+    //    this.enemy_ships[i].update_physics(delta_time)
+    //    if(this.enemy_ships[i].exit_screen(this.enemy_ships[i].pos)){
+    //        this.enemy_ships.splice(i, 1)
+    //        i--
+    //        this.level.current_enemies--
+    //    }
+    //}
 
+    /*Player shots*/
+    var shot_delete = false
+    for(var i=0; i<this.players_shots.length; i++){
+	shot_delete = false
+	this.players_shots[i].update_physics(delta_time)
+        for(var j=0; j<this.enemies.length; j++)
+           if(!shot_delete && this.players_shots[i].collision(this.enemies[j])){
+		      if(this.enemies[j].dead(this)){
+	                 this.players[this.players_shots[i].player-1].score += this.enemies[j].score
+	                 this.enemies[j].improvement(world)
+                         if(this.enemies[j].constructor.name == "EnemyShip")
+			     this.level.ship = false
+	                 this.enemies.splice(j, 1)
+	                 this.level.current_enemies--
+	                 this.level.enemies_dead ++
+		      }else{
+	                  this.new_explosion(this.players_shots[i].pos, new Coord(0), new Coord(0))
+		      }
+	       shot_delete = true
 	   }
         if(!shot_delete && this.players_shots[i].exit_screen(this.players_shots[i].pos)){
-	   this.players_shots.splice(i, 1)
 	   shot_delete = true
+	}
+	if(shot_delete){
+	   this.players_shots.splice(i, 1)
+	   i--
 	}
     }
 
     /*Enemy shots*/
-    var shot_delete = false
     for(var i=0; i<this.enemy_shots.length; i++){
        shot_delete = false
        this.enemy_shots[i].update_physics(delta_time)
        for(var j=0; j<this.players.length; j++)
 	   if(!this.players[j].startup && this.players[j].alive && !shot_delete && this.enemy_shots[i].collision(this.players[j])){
 	       this.new_explosion(this.players[j].pos, this.players[j].speed, new Coord(0))
-	       this.players[j].lives--
-	       this.players[j].regenerate()
+	       this.players[j].damage()
 	       shot_delete = true
-	       if(this.players[j].lives <= 0)
-	           this.players[j].alive = false	   
 	   }
        if(!shot_delete && this.enemy_shots[i].exit_screen(this.enemy_shots[i].pos)){
 	   shot_delete = true
        }
-       if(shot_delete)
+       if(shot_delete){
 	   this.enemy_shots.splice(i, 1)
+	   i--
+       }
     }
 
     /*Explosions*/
@@ -189,8 +221,14 @@ World.prototype.update_physics = function(){
 	}
     }
 
+    /*Improvements*/
+    for(var i=0; i<this.improvements.length; i++){
+	this.improvements[i].update_physics(delta_time)
+         //if(this.enemy_shots[i].exit_screen(this.enemy_shots[i].pos))
+    }
+
     this.enemy_shot()
-    this.create_enemy()
+    this.level.create_new_enemy()
     this.level_up()
 }
 
@@ -234,18 +272,12 @@ World.prototype.players_alive = function(){
 
 /*Crea disparos de los enemigos*/
 World.prototype.enemy_shot = function(){
-   for(var i=0; i<this.enemy_planes.length; i++)
-      if(this.enemy_planes[i].constructor.name != "KamikazeEnemy")
-            this.enemy_planes[i].shoot(this.players, this)
-}
+   for(var i=0; i<this.enemies.length; i++)
+      if(this.enemies[i].constructor.name != "KamikazeEnemy")
+            this.enemies[i].shoot(this.players, this)
 
-/*Crea nuevos enemigos*/
-World.cicle = 0
-World.prototype.create_enemy = function(){
-    var create = Math.floor(Math.random() * 10)
-    if( create == 5 && (create+World.cicle)%2 ==0)
-    this.level.create_new_enemy()
-    World.cicle++
+   //for(var i=0; i<this.enemy_ships.length; i++)
+      // this.enemy_ships[i].shoot(this.players, this)
 }
 
 /*Gestiona los eventos*/

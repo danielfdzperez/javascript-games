@@ -3,7 +3,7 @@ function Background(){
 	         [0, 0, 0, 0, 0, 0, 0, 0],
 	         [0, 0, 0, 0, 0, 1, 0, 0],
  	         [0, 0, 0, 0, 2, 0, 0, 0],
-	         [1, 0, 0, 3, 0, 0, 0, 0],
+	         [0, 0, 0, 3, 0, 0, 0, 0],
                  [0, 0, 0, 0, 0, 0, 0, 0],
 	         [0, 0, 0, 3, 0, 0, 0, 0],
  	         [0, 0, 0, 0, 0, 0, 0, 0],
@@ -13,7 +13,7 @@ function Background(){
 	         [0, 0, 0, 0, 0, 0, 0, 0],
  	         [0, 0, 0, 0, 2, 0, 0, 0],
 	         [0, 0, 0, 0, 0, 0, 0, 0],
-                 [3, 0, 0, 0, 0, 0, 3, 0],
+                 [0, 0, 0, 0, 0, 0, 3, 0],
 	         [0, 0, 0, 0, 0, 0, 0, 0],
  	         [0, 0, 0, 0, 2, 0, 0, 0],
 	         [0, 0, 0, 0, 0, 0, 1, 0]
@@ -55,7 +55,7 @@ Background.wrap_index = function(number, max_number){
 
 Background.prototype.random_map = function(row){
     for(var x=0; x<this.map[row].length; x++)
-	if(Math.floor((Math.random() * 10)) == 3)
+	if(Math.floor((Math.random() * 10)) == 3 && (x != 0 && x != 7))
 	   this.map[row][x] = Math.floor((Math.random() * (this.max_tiles-1)) + 1)
 	else
 	   this.map[row][x] = 0

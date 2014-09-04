@@ -1,8 +1,9 @@
 LoopEnemy.prototype = new Enemy
 LoopEnemy.prototype.constructor = LoopEnemy
 
-function LoopEnemy(px, py, sx, sy, ax, ay){
+function LoopEnemy(px, py, sx, sy, ax, ay, shot_improvements){
     GameObject.call(this, px, py, sx, sy, ax, ay, 150)
+    Enemy.call(this, shot_improvements, 1)
     this.rectangles.push(new Rectangle(px, py, 32, 32, 0, 0))
     this.looping = false
     this.looped  = false

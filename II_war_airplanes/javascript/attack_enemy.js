@@ -2,8 +2,9 @@ Attack_enemy.prototype = new Enemy
 Attack_enemy.prototype.constructor = Attack_enemy
 
 //Attack_enemy.image = new Img(false, "img/attack-enemy-sprite.png", 32, 32, 3)
-function Attack_enemy(px, py, sx, sy, ax, ay){
+function Attack_enemy(px, py, sx, sy, ax, ay, shot_improvements){
     GameObject.call(this, px, py, sx, sy, ax, ay, 30)
+    Enemy.call(this, shot_improvements, 1)
 	this.rectangles.push(new Rectangle(px, py, 27, 12, 3, 15))
 	this.rectangles.push(new Rectangle(px, py, 14, 7, 9, 27))
 	this.rectangles.push(new Rectangle(px, py, 14, 11, 9, 2))

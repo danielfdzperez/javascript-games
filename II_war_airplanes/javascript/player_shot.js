@@ -2,10 +2,11 @@ PlayerShot.prototype = new GameObject
 PlayerShot.prototype.constructor = PlayerShot
 
 //PlayerShot.image = new Img(false, "img/player-shot-1.png", 9, 20, 1)
-function PlayerShot(px, py, sx, sy, ax, ay, player){
+function PlayerShot(px, py, sx, sy, ax, ay, player, type){
     GameObject.call(this, px, py, sx, sy, ax, ay)
-    this.rectangles.push(new Rectangle(px, py, 10, 19, 0, 0))
-    this.image_name = "shot_1"
+    this.image_name = "shot_" + type
+    this.rectangles.push(new Rectangle(px, py, GameObject.image_stack.stack[this.image_name].width, 
+		GameObject.image_stack.stack[this.image_name].height, 0, 0))
     this.player = player
 }
 

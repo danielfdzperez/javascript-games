@@ -1,8 +1,9 @@
 KamikazeEnemy.prototype = new Enemy
 KamikazeEnemy.prototype.constructor = KamikazeEnemy
 
-function KamikazeEnemy(px, py, sx, sy, ax, ay, img){
+function KamikazeEnemy(px, py, sx, sy, ax, ay, img, shot_improvements){
     GameObject.call(this, px, py, sx, sy, ax, ay, 50)
+    Enemy.call(this, shot_improvements, 1)
     this.rectangles.push(new Rectangle(px, py, 32, 32, 0, 0))
     this.image_name = img
 }
