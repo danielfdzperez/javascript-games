@@ -4,19 +4,16 @@ function World(id, n_players){
     this.n_players        = n_players // El numero de jugadores que hay en el mundo
     this.players          = [] //Jugadores
     this.players_shots    = [] //Disparos de los jugadores
-    //this.enemies     = [] //Aviones enemigos
     this.enemy_shots      = [] //Disparos enemigos
-    //this.enemy_ships      = [] //Barcos enemigos
     this.enemies          = [] 
     this.improvements     = [] //Mejoras
     this.explosions       = [] //Explosiones
     this.background = new Background()    //Gestiona el fondo
     this.ev = new Events()                //Gestiona los eventos
-    //this.ev.enable_inputs()               //Activa los eventos
     this.level = new Level(this)          //Gestiona el nivel
     this.delta = new FrameRateCounter(15) //Gestiona el tiempo delta FPS
     this.end = false
-    this.menu = new Menu()
+    this.menu = new Menu(this.canvas)
     this.menu_on = false
 }
 
@@ -65,7 +62,7 @@ World.prototype.start = function(restart){
     }
     this.level.new_level()
     for(var i=0; i<this.n_players; i++)
-       this.new_player(150*(i+1), 400, i+1, 0, 0, 0, 0)
+       this.new_player(400/(i+1), 400, i+1, 0, 0, 0, 0)
     this.end = false
     this.menu_on = false
 }
@@ -81,21 +78,24 @@ World.prototype.delete_obj = function(){
 
 /*Refresca los graficos*/
 World.prototype.refresh_graphics = function(){
-   this.ctx.clearRect(0, 0, 500, 500)
+   this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
 
 
    this.background.draw(this.ctx)
    for(var i=0; i<this.enemies.length; i++)
        this.enemies[i].draw(this.ctx)
    this.ctx.font = "20px Arial"
-   this.ctx.fillText("Level " + this.level.number, 400, 20, 400)
+   this.ctx.fillText("Level " + this.level.number, this.canvas.width-100, 20, 400)
+   var level_end = this.level.enemies_dead * 100
+   level_end /= this.level.max_enemies
+   this.ctx.fillText("End " + Math.floor(level_end) + "%", this.canvas.width-100, 40, 400)
    //this.ctx.fillText("E_dead " + this.level.enemies_dead, 400, 40, 400)
 
 
    for(var i=0; i<this.players.length; i++){
        if(this.players[i].alive)
           this.players[i].draw(this.ctx)
-       this.players[i].draw_info(this.ctx)
+       this.players[i].draw_info(this.ctx, this.canvas)
    }
 
    for(var i=0; i<this.players_shots.length; i++)
@@ -120,7 +120,7 @@ World.prototype.update_physics = function(){
     for(var i=0; i<this.players.length; i++){
        if(this.players[i].alive){
 	   this.players[i].extra_live()
-           this.players[i].update_physics(delta_time)
+           this.players[i].update_physics(delta_time, this.canvas)
            this.players[i].shot(this)
 	   for(var j=0; j<this.improvements.length; j++){
 	       if(this.players[i].collision(this.improvements[j])){
@@ -147,7 +147,7 @@ World.prototype.update_physics = function(){
     /*Attack enemies*/
     for(var i=0; i<this.enemies.length; i++){
        this.enemies[i].update_physics(delta_time)
-       if(this.enemies[i].exit_screen(this.enemies[i].pos)){
+       if(this.enemies[i].exit_screen(this.enemies[i].pos, this.canvas)){
            if(this.enemies[i].constructor.name == "EnemyShip")
 	      this.level.ship = false
 	   this.enemies.splice(i, 1)
@@ -185,7 +185,7 @@ World.prototype.update_physics = function(){
 		      }
 	       shot_delete = true
 	   }
-        if(!shot_delete && this.players_shots[i].exit_screen(this.players_shots[i].pos)){
+        if(!shot_delete && this.players_shots[i].exit_screen(this.players_shots[i].pos, this.canvas)){
 	   shot_delete = true
 	}
 	if(shot_delete){
@@ -204,7 +204,7 @@ World.prototype.update_physics = function(){
 	       this.players[j].damage()
 	       shot_delete = true
 	   }
-       if(!shot_delete && this.enemy_shots[i].exit_screen(this.enemy_shots[i].pos)){
+       if(!shot_delete && this.enemy_shots[i].exit_screen(this.enemy_shots[i].pos, this.canvas)){
 	   shot_delete = true
        }
        if(shot_delete){
@@ -224,7 +224,8 @@ World.prototype.update_physics = function(){
     /*Improvements*/
     for(var i=0; i<this.improvements.length; i++){
 	this.improvements[i].update_physics(delta_time)
-         //if(this.enemy_shots[i].exit_screen(this.enemy_shots[i].pos))
+         if(this.improvements[i].exit_screen(this.improvements[i].pos, this.canvas))
+	     this.improvements.splice(i, 1)
     }
 
     this.enemy_shot()

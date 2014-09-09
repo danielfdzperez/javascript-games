@@ -10,7 +10,7 @@ function PlayerShot(px, py, sx, sy, ax, ay, player, type){
     this.player = player
 }
 
-PlayerShot.prototype.exit_screen = function(next_pos){
-    return!(next_pos.x < 510 && next_pos.x > -45  && next_pos.y < 510 && next_pos.y > -45)
+PlayerShot.prototype.exit_screen = function(next_pos, canvas){
+    return!(next_pos.x < (canvas.width+10) && next_pos.x > -45  && next_pos.y < (canvas.height+10) && next_pos.y > -45)
 }
 

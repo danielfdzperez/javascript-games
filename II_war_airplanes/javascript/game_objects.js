@@ -27,7 +27,7 @@ GameObject.load_images = function(){
     GameObject.image_stack.add_to_stack("img/player-shot-6.png", 13, 13, 1, "shot_6")
     GameObject.image_stack.add_to_stack("img/shot-improvement.png", 24, 25, 1, "shot_improvement")
     GameObject.image_stack.add_to_stack("img/shield-improvement.png", 20, 29, 1, "shield_improvement")
-    GameObject.image_stack.add_to_stack("img/shot-speed-improvement.png", 20, 28, 1, "shot_speed_improvement")
+    GameObject.image_stack.add_to_stack("img/speed-improvement.png", 20, 28, 1, "speed_improvement")
     GameObject.image_stack.add_to_stack("img/attack-enemy-sprite.png", 32, 32, 3, "attack_enemy")
     GameObject.image_stack.add_to_stack("img/loop-enemy-sprite.png", 32, 32, 5, "loop_enemy")
     GameObject.image_stack.add_to_stack("img/kamikaze-enemy-sprite.png", 32, 32, 3, "kamikaze_enemy")
@@ -98,11 +98,11 @@ GameObject.prototype.collision = function(obj){
     return collision
 }
 
-GameObject.prototype.update_physics = function(delta){
+GameObject.prototype.update_physics = function(delta, canvas){
     this.speed.x += this.acceleration.x
     this.speed.y += this.acceleration.y
     if(this.constructor.name == "Player")
-	 this.update_pos(delta)
+	 this.update_pos(delta, canvas)
     else{
 	   this.pos.x += this.speed.x*delta
            this.pos.y += this.speed.y*delta

@@ -10,7 +10,7 @@ function LoopEnemy(px, py, sx, sy, ax, ay, shot_improvements){
     this.image_name = "loop_enemy"
 }
 
-LoopEnemy.prototype.exit_screen = function(next_pos){
+LoopEnemy.prototype.exit_screen = function(next_pos, canvas){
     return(next_pos.y < -45)
 }
 

@@ -45,7 +45,7 @@ Enemy.prototype.shoot = function(players, world, increment){
 
 Enemy.prototype.improvement = function(world){
     if(this.has_improvement){
-        var type = ["shot", "shield", "shot_speed"]
+        var type = ["shot", "shield", "speed"]
 	world.new_improvement(this.pos.x, this.pos.y, 0, 1, 0, 0, type[Math.floor(Math.random()*3)])
     }
 }

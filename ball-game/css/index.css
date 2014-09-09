@@ -1,3 +1,13 @@
+#menu{
+border-style:solid;
+}
+#game{
+margin-left: 25%;
+margin-right: 25%;
+height: 355px;/*alto*/
+width: 505px;
+border-style:solid;
+}
 #canvas{
 border-style:solid;
 }

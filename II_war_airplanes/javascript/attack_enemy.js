@@ -11,18 +11,20 @@ function Attack_enemy(px, py, sx, sy, ax, ay, shot_improvements){
         this.image_name = "attack_enemy"
 }
 
-Attack_enemy.prototype.exit_screen = function(next_pos){
-    return!(next_pos.x < 510 && next_pos.x > -45  && next_pos.y < 510 && next_pos.y > -45)
+Attack_enemy.prototype.exit_screen = function(next_pos, canvas){
+    return!(next_pos.x < (canvas.width+10) && next_pos.x > -45  && next_pos.y < (canvas.height+1) && next_pos.y > -45)
 }
 
 /*Comprueba si puede disparar y calcula la direccion del disparo*/
 Attack_enemy.prototype.shoot = function(players, world){
     //Comprueba que puede disparar otra vez
-    if(this.pos.y > 300 && this.pos.y < 400)
+    if(this.pos.y > (world.canvas.height/2+100) && this.pos.y < (world.canvas.height/2+200)){
 	this.shot = false
+    }
    
     //comprueba si puede disparar
-    if(!this.shot && ((this.pos.y <= 500 && this.pos.y >= 450) || (this.pos.y >= 200 && this.pos.y <= 300)) && 
+    if(!this.shot && ((this.pos.y <= (world.canvas.height + 100) && this.pos.y >= (world.canvas.height-100)) || 
+		(this.pos.y >= (world.canvas.height/2-200) && this.pos.y <= (world.canvas.height/2+100))) && 
 	    world.players_alive() != -1){
 	Enemy.prototype.shoot.call(this, players, world)
 	//var player = null

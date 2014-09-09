@@ -1,6 +1,6 @@
-function Menu(){
-    this.pos_1 = new Coord(200)
-    this.pos_2 = new Coord(200, 300)
+function Menu(canvas){
+    this.pos_1 = new Coord(canvas.width/2-50, canvas.height/2)
+    this.pos_2 = new Coord(canvas.width/2-50, canvas.height/2+100)
     this.rectangles = []
     this.rectangles.push(new Rectangle(this.pos_1.x, this.pos_1.y, 100, 30, -10, -20))
     this.rectangles.push(new Rectangle(this.pos_2.x, this.pos_2.y, 100, 30, -10, -20))
@@ -12,6 +12,10 @@ Menu.prototype.draw = function(ctx){
    ctx.clearRect(0, 0, 500, 500)
    ctx.drawImage(this.background, 0, 0)
    ctx.font = "20px Arial"
+   var a = new Img(false, "img/a.png", 12, 12, 1)
+   var p = new Img(false, "img/p.png", 12, 12, 1)
+   ctx.drawImage(a.image, 100, 100)
+   ctx.drawImage(p.image, 112, 100)
    ctx.fillText("1 Player ", this.pos_1.x, this.pos_1.y, 400)
    ctx.fillText("2 Player", this.pos_2.x, this.pos_2.y, 400)
    ctx.save()

@@ -4,9 +4,9 @@ EnemyShip.prototype.constructor = EnemyShip
 function EnemyShip(place, improvements){
     this.place = place
     if(this.place == 0)
-       GameObject.call(this, 5, -190, 0, 5, 0, 0, 30)
+       GameObject.call(this, 5, -190, 0, 5, 0, 0, 300)
     else
-       GameObject.call(this, 450, -190, 0, 5, 0, 0, 30)
+       GameObject.call(this, 650, -190, 0, 5, 0, 0, 300)
 
     Enemy.call(this, improvements, 5, 3)
     this.rectangles.push(new Rectangle (this.pos.x, this.pos.y, 34, 173, 3, 14))
@@ -18,8 +18,8 @@ function EnemyShip(place, improvements){
 }
 
 //Cambiarlo
-EnemyShip.prototype.exit_screen = function(next_pos){
-    return!(next_pos.x < 510 && next_pos.x > -45  && next_pos.y < 510 && next_pos.y > -200)
+EnemyShip.prototype.exit_screen = function(next_pos, canvas){
+    return!(next_pos.x < (canvas.width+10) && next_pos.x > -45  && next_pos.y < (canvas.height+10) && next_pos.y > -200)
 }
 
 EnemyShip.prototype.draw = function(ctx){
@@ -34,7 +34,7 @@ EnemyShip.prototype.draw = function(ctx){
        this.move_animation ++
 }
 
-EnemyShip.prototype.update_physics = function(delta_time){
+EnemyShip.prototype.update_physics = function(delta_time, canvas){
     if(this.pos.y >= 100 && this.pos.y <= 200 && (this.stationary == 0 || this.stationary % 150 != 0)){
 	this.speed.y = 0
 	this.moving = false
@@ -55,12 +55,14 @@ EnemyShip.prototype.shoot = function(players, world){
         if(this.place == 1)
             direcction *= -1
 
-        if(this.shot_step % 20 == 0){
+        if(this.shot_step % 20 == 0)
            world.new_enemy_shot(this.pos.x + 18, this.pos.y + 82, direcction, 0, 0, 0)
+        if(this.shot_step % 25 == 0)
            world.new_enemy_shot(this.pos.x + 18, this.pos.y + 82, direcction, direcction, 0, 0)
+        if(this.shot_step % 15 == 0)
            world.new_enemy_shot(this.pos.x + 18, this.pos.y + 82, direcction, -direcction, 0, 0)
+        if(this.shot_step % 30 == 0)
            world.new_enemy_shot(this.pos.x + 18, this.pos.y + 82, 0, 10, 0, 0)
-        }
     }
     if(this.shot_step % 15 == 0)
        Enemy.prototype.shoot.call(this, players, world, new Coord(18, 82))

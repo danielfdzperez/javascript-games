@@ -8,8 +8,8 @@ function KamikazeEnemy(px, py, sx, sy, ax, ay, img, shot_improvements){
     this.image_name = img
 }
 
-KamikazeEnemy.prototype.exit_screen = function(next_pos){
-    return!(next_pos.x < 510 && next_pos.x > -45  && next_pos.y < 510 && next_pos.y > -45)
+KamikazeEnemy.prototype.exit_screen = function(next_pos, canvas){
+    return!(next_pos.x < (canvas.width+10) && next_pos.x > -45  && next_pos.y < (canvas.height+10) && next_pos.y > -45)
 }
 
 //KamikazeEnemy.prototype.draw = function(ctx){

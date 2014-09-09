@@ -2,6 +2,7 @@ Player.prototype = new GameObject
 Player.prototype.constructor = Player
 
 //Player.image = new Img(false, "img/player-sprite.png", 65, 65, 3)
+
 function Player(px, py, number, sx, sy, ax, ay){
     GameObject.call(this, px, py, sx, sy, ax, ay)
     this.init_pos = new Coord(px, py)
@@ -48,12 +49,12 @@ Player.prototype.action = function(events, world){
 }
 
 Player.prototype.exit_screen = function(next_pos){
-    return!(next_pos.x < 435 && next_pos.x > -10  && next_pos.y < 435 && next_pos.y > -20)
+    return!(next_pos.x < (canvas.width-65) && next_pos.x > -10  && next_pos.y < (canvas.height-65) && next_pos.y > -20)
 }
 
-Player.prototype.update_pos = function(delta){
+Player.prototype.update_pos = function(delta, canvas){
     var next_pos = new Coord((this.pos.x + this.speed.x*delta), (this.pos.y + this.speed.y*delta))
-    if(!this.exit_screen(next_pos)){
+    if(!this.exit_screen(next_pos, canvas)){
          this.pos.x += this.speed.x*delta
          this.pos.y += this.speed.y*delta
          this.update_rectangle_positions()
@@ -105,8 +106,8 @@ Player.prototype.shot = function(world){
 	this.temp_shot++
 }
 
-Player.prototype.draw_info = function(ctx){
-   ctx.fillText("Score: " + this.score, 200, 20+((this.number-1)*32), 100)
+Player.prototype.draw_info = function(ctx, canvas){
+   ctx.fillText("Score: " + this.score, canvas.width/2, 20+((this.number-1)*32), 100)
    for(var i=0; i<this.lives; i++)
        ctx.drawImage(GameObject.image_stack.stack["player_" + this.number + "_live"].image, i*32+10, (0+this.number-1)*32) 
    for(var i=0; i<this.shield; i++)
@@ -157,8 +158,8 @@ Player.prototype.improve = function(type, effect){
 	case "shield":
 	    this.shield_improve(effect)
 	    break;
-	case "shot_speed":
-	    this.shot_speed_improve(effect)
+	case "speed":
+	    this.speed_improve(effect)
 	    break;
     }
 }
@@ -175,7 +176,7 @@ Player.prototype.shield_improve = function(effect){
 	this.shield++
 }
 
-Player.prototype.shot_speed_improve = function(effect){
+Player.prototype.speed_improve = function(effect){
 //    if(this.shot_speed > 5 && effect == 1)
 //	this.shot_speed -= 5
 //    if(this.shot_speed < 15 && effect == 0)

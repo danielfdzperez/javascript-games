@@ -30,8 +30,8 @@ function start_level(){
    //world.new_box(-60, 100, 20)
    //world.new_ball(100, 60, 10)
 
-   world.new_ball(0, 0, 10)
-   world.new_ball(50, 0, 10)
+   world.new_ball(0, 0, 10, 30, 160)
+   //world.new_ball(50, 0, 10)
    world.new_gate(-240, 10, 10)
    //world.new_box(0, 0, 20)
    world.new_box(-150, 0, 30)
