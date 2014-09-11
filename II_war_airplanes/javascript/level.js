@@ -18,10 +18,9 @@ Level.prototype.level_up = function(){
     this.max_enemies += 7
     this.max_current_enemies += 2
     this.enemies_dead = 0
-    if((this.max_cicle > 15 && this.level < 7) || (this.max_cicle > 5 && this.level >= 7)){
+    if((this.max_cicle > 15 && this.number < 7) || (this.max_cicle > 5 && this.number >= 7))
 	this.max_cicle -= 5
-	console.log(this.max_cicle)
-    }
+
     if(this.number % 2 == 0)
 	this.world.new_improvement(this.world.canvas.width/2, 0, 0, 1, 0, 0, "shot")
     else{
