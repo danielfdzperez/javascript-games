@@ -17,12 +17,7 @@ function Img(stack, src, width, height, n_sprites){
 
 Img.prototype.add_to_stack = function(src, width, height, n_sprites, name){
     if(this.stack_mode){
-	var free_stack = true
-	for(var i=0; i<this.stack_length; i++)
-	    if(name in this.stack)
-		free_stack = false
-
-	if(free_stack){
+	if(!(name in this.stack)){
 	    this.stack[name] = new Img(false, src, width, height, n_sprites)
 	    this.stack_length++
 	}

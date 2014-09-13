@@ -15,6 +15,7 @@ function World(id, n_players){
     this.end = false
     this.menu = new Menu(this.canvas)
     this.menu_on = false
+    this.background_music = new Sound(false, "sounds/back.mp3", 10, "backgorund", true) 
 }
 
 /*Agrega a su correspondiente array el nuevo objeto al mundo*/
@@ -59,6 +60,7 @@ World.prototype.start = function(restart){
     if(!restart){
        GameObject.load_images()
        this.background.load_tiles()
+       this.background_music.sound.play()
     }
     this.level.new_level()
     for(var i=0; i<this.n_players; i++)
@@ -174,7 +176,7 @@ World.prototype.update_physics = function(){
            if(!shot_delete && this.players_shots[i].collision(this.enemies[j])){
 		      if(this.enemies[j].dead(this)){
 	                 this.players[this.players_shots[i].player-1].score += this.enemies[j].score
-	                 this.enemies[j].improvement(world)
+	                 this.enemies[j].improvement(this)
                          if(this.enemies[j].constructor.name == "EnemyShip")
 			     this.level.ship = false
 	                 this.enemies.splice(j, 1)
@@ -283,9 +285,11 @@ World.prototype.enemy_shot = function(){
 
 /*Gestiona los eventos*/
 World.prototype.events = function(e){
-    this.players[0].action(this.ev, this)
+    this.players[0].action(this.ev)
     if(this.n_players > 1)
-       this.players[1].action(this.ev, this)
+       this.players[1].action(this.ev)
+    if(77 in this.ev.keys_down)
+	   this.background_music.mute()
 
     //if(this.end && 13 in this.ev.keys_down)
 	
@@ -309,6 +313,6 @@ World.prototype.show_menu = function(){
 World.prototype.mouse_press = function(e){
    if(this.menu_on){
       var mouse = {pos: new Coord((e.pageX-this.canvas.offsetLeft), (e.pageY-this.canvas.offsetTop))}
-      this.n_players = this.menu.click(mouse.pos.x, mouse.pos.y)
+      this.menu.click(mouse.pos.x, mouse.pos.y, this)
    }
 }

@@ -6,6 +6,9 @@ function KamikazeEnemy(px, py, sx, sy, ax, ay, img, shot_improvements){
     Enemy.call(this, shot_improvements, 1)
     this.rectangles.push(new Rectangle(px, py, 32, 32, 0, 0))
     this.image_name = img
+    this.sound_name = "detector"
+    this.sound_src  = "sounds/detector.wav"
+    this.play_sound()   
 }
 
 KamikazeEnemy.prototype.exit_screen = function(next_pos, canvas){

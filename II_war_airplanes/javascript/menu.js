@@ -12,10 +12,6 @@ Menu.prototype.draw = function(ctx){
    ctx.clearRect(0, 0, 500, 500)
    ctx.drawImage(this.background, 0, 0)
    ctx.font = "20px Arial"
-   var a = new Img(false, "img/a.png", 12, 12, 1)
-   var p = new Img(false, "img/p.png", 12, 12, 1)
-   ctx.drawImage(a.image, 100, 100)
-   ctx.drawImage(p.image, 112, 100)
    ctx.fillText("1 Player ", this.pos_1.x, this.pos_1.y, 400)
    ctx.fillText("2 Player", this.pos_2.x, this.pos_2.y, 400)
    ctx.save()
@@ -30,12 +26,12 @@ Menu.prototype.draw = function(ctx){
    ctx.restore()
 }
 
-Menu.prototype.click = function(x, y){
+Menu.prototype.click = function(x, y, world){
     var mouse = {pos: new Coord(x, y)}
     var player = 0
     for(var i=0; i<this.rectangles.length; i++)
 	if( ( (mouse.pos.x > this.rectangles[i].pos.x) && (mouse.pos.x < (this.rectangles[i].pos.x + this.rectangles[i].width)) )
 	   && ( (mouse.pos.y > this.rectangles[i].pos.y) && (mouse.pos.y < (this.rectangles[i].pos.y + this.rectangles[i].height))) )
 	    player = i+1
-    return player
+    world.n_players = player
 }

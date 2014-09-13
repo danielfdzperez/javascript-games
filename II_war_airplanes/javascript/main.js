@@ -1,3 +1,4 @@
+(function(){
 window.addEventListener("load", init, false)
 var world = null
 var last_time = null
@@ -27,7 +28,8 @@ function start_objects(){
 
 function menu(){
     menu_time = setTimeout(menu, 1)
-    world.show_menu()
+    if(!world.menu_on)
+       world.show_menu()
     if(world.n_players != 0){
        clearTimeout(menu_time)
        start()
@@ -69,3 +71,4 @@ function events(){
 	   world.mouse_press(e)
    },false) 
 }
+})();

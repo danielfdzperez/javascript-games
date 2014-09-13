@@ -23,7 +23,7 @@ function Player(px, py, number, sx, sy, ax, ay){
     this.next_extra_live = 1
 }
 
-Player.prototype.action = function(events, world){
+Player.prototype.action = function(events){
     if ((87 in events.keys_up && this.number == 2) || (38 in events.keys_up && this.number == 1)){  // up
 	this.speed.y = 0 
     }

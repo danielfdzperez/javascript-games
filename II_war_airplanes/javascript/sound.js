@@ -1,7 +1,6 @@
 function Sound(stack, src, volume, name, loop){
     if(stack){
-        this.stack = {}
-	this.stack_length = 0
+        this.stack = []
 	this.stack_mode = true
 	this.max_sounds = src
     }
@@ -10,22 +9,41 @@ function Sound(stack, src, volume, name, loop){
         this.sound.src = src
         this.sound.loop = loop || false
         this.sound.volume = volume * 0.1 || 1
-	this.sound.name = name
-        this.sound.endend = false
 	this.stack_mode = false
+	this.volume = this.sound.volume
+	this.name = name
     }
 }
 
-Sound.prototype.add_to_stack = function(src, name){
+Sound.prototype.play = function(src, name, volume, loop){
     if(this.stack_mode){
-	var free_stack = true
-	for(var i=0; i<this.stack_length; i++)
-	    if(name in this.stack && this.stak[i].enden)
-		free_stack = false
-
-	if(free_stack){
-	    this.stack[name] = new Img(false, src, width, height, n_sprites)
-	    this.stack_length++
-	}
+	var play = false
+	for(var i=0; i<this.stack.length && !play; i++)
+	   if(this.stack[i].name == name && this.stack[i].sound.ended){
+	       this.stack[i].sound.play()
+	       play = true
+	   }
+	if(!play)
+           if(this.stack.length < this.max_sounds){
+              this.stack[this.stack.length] = new Sound(false, src, volume, name, loop)
+              this.stack[this.stack.length-1].sound.play()
+           }
+           else
+              for(var i=0; i<this.stack.length; i++)
+                 if(this.stack[i].sound.ended){
+                     this.stack[i] = new Sound(false, src, volume, name, loop)
+                     this.stack[i].sound.play()
+                 }
     }
+}
+
+Sound.prototype.mute = function(){
+    if(!this.stack_mode)
+	if(this.sound.volume != 0) 
+	    this.sound.volume = 0
+	else
+	    this.sound.volume = this.volume
+    else
+	for(var i=0; i<this.stack.length; i++)
+	    this.stack[i].mute()
 }

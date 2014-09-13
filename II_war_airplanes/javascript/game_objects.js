@@ -5,6 +5,9 @@ function GameObject(px, py, sx, sy, ax, ay, score){
     this.acceleration = new Coord(ax, ay)
     this.rectangles = []
     this.score = score || 0
+    this.image_name = null
+    this.sound_name = null
+    this.sound_src  = null
 
 
     this.giro = 0
@@ -40,6 +43,13 @@ GameObject.load_images = function(){
     GameObject.image_stack.add_to_stack("img/enemy-shot.png", 9, 9, 1, "enemy_shot")
     console.log(GameObject.image_stack)
 }
+
+GameObject.sound_stack = new Sound(true, 20)
+
+GameObject.prototype.play_sound = function(){
+    GameObject.sound_stack.play(this.sound_src, this.sound_name, 3, false)
+}
+
 
 GameObject.prototype.draw = function(ctx){
     //ctx.save()
