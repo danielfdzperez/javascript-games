@@ -298,9 +298,9 @@ World.prototype.events = function(e){
 /*Muestra fin del juego*/
 World.prototype.game_over = function(){
     this.ctx.font = "50px Serif"
-    this.ctx.fillText("Game Over", 100, 250, 400)
+    this.ctx.fillText("Game Over", this.canvas.width/2-100, this.canvas.height/2, 400)
     this.ctx.font = "20px Arial"
-    this.ctx.fillText("Press enter to continue", 100, 450, 400)
+    this.ctx.fillText("Press enter to continue", this.canvas.width/2-50, this.canvas.height/2+100, 400)
     this.end = true
     this.n_players = 0
 }
