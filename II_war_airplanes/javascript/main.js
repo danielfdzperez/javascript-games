@@ -47,7 +47,8 @@ function game_loop(){
 function end(){
     clearTimeout(loop_time)
     loop_time = setTimeout(end, 10)
-    world.game_over()
+    if(!world.end)
+       world.game_over()
     if(13 in world.ev.keys_down){
 	clearTimeout(loop_time)
 	restart = true
@@ -71,4 +72,5 @@ function events(){
 	   world.mouse_press(e)
    },false) 
 }
+
 })();

@@ -29,7 +29,7 @@ function Background(){
 Background.prototype.load_tiles = function(){
     for(var i=0; i<this.max_tiles; i++){
 	this.tiles.push(new Image())
-	this.tiles[i].src = "img/tile" + i + ".png"
+	this.tiles[i].src = "../img/tile" + i + ".png"
     }
 }
 

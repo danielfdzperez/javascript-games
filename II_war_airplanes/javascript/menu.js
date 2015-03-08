@@ -1,11 +1,14 @@
 function Menu(canvas){
+    var that = this
+    this.ready = false
     this.pos_1 = new Coord(canvas.width/2-50, canvas.height/2)
     this.pos_2 = new Coord(canvas.width/2-50, canvas.height/2+100)
     this.rectangles = []
     this.rectangles.push(new Rectangle(this.pos_1.x, this.pos_1.y, 100, 30, -10, -20))
     this.rectangles.push(new Rectangle(this.pos_2.x, this.pos_2.y, 100, 30, -10, -20))
     this.background = new Image()
-    this.background.src = "img/menu.jpg"
+    this.background.src = "../img/menu.jpg"
+    this.background.onload = function(){that.ready = true}
 }
 
 Menu.prototype.draw = function(ctx){

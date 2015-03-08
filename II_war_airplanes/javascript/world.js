@@ -15,7 +15,8 @@ function World(id, n_players){
     this.end = false
     this.menu = new Menu(this.canvas)
     this.menu_on = false
-    this.background_music = new Sound(false, "sounds/back.mp3", 10, "backgorund", true) 
+    this.background_music = new Sound(false, "../sounds/back.mp3", 10, "backgorund", true) 
+    this.total_score = new Score()
 }
 
 /*Agrega a su correspondiente array el nuevo objeto al mundo*/
@@ -62,6 +63,8 @@ World.prototype.start = function(restart){
        this.background.load_tiles()
        this.background_music.sound.play()
     }
+    this.total_score.get_score()
+    console.log(this.total_score.score)
     this.level.new_level()
     for(var i=0; i<this.n_players; i++)
        this.new_player(400/(i+1), 400, i+1, 0, 0, 0, 0)
@@ -303,10 +306,18 @@ World.prototype.game_over = function(){
     this.ctx.fillText("Press enter to continue", this.canvas.width/2-50, this.canvas.height/2+100, 400)
     this.end = true
     this.n_players = 0
+    this.total_score.add_score(this.players[0].score)
+    this.total_score.save_score()
 }
 
 World.prototype.show_menu = function(){
-    this.menu.draw(this.ctx) 
+    if(!this.menu.ready){
+      this.canvas.width = this.canvas.width
+      this.ctx.font = "50px Serif"
+      this.ctx.fillText("Loading", this.canvas.width/2-100, this.canvas.height/2)
+      setTimeout(show_menu, 10)
+    }
+    this.menu.draw(this.ctx)
     this.menu_on = true
 }
 
