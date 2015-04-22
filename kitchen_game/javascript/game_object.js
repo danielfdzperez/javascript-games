@@ -6,6 +6,10 @@ function GameObject(x, y, width, height, image){
     this.height = height
 }
 
+GameObject.prototype.run = function(ctx){
+	this.draw(ctx)
+}
+
 GameObject.prototype.draw = function(ctx){
     ctx.drawImage(this.image, this.position.x, this.position.y, this.width, this.height)
 }
