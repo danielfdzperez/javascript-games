@@ -315,7 +315,7 @@ World.prototype.show_menu = function(){
       this.canvas.width = this.canvas.width
       this.ctx.font = "50px Serif"
       this.ctx.fillText("Loading", this.canvas.width/2-100, this.canvas.height/2)
-      setTimeout(show_menu, 10)
+      setTimeout(this.show_menu, 10)
     }
     this.menu.draw(this.ctx)
     this.menu_on = true
