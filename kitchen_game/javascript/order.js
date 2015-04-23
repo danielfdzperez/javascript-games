@@ -13,7 +13,7 @@ function Order(n_max_producs, products){
 }
 
 Order.prototype.addProducts = function(max, products){
-    var n_products = Math.floor(Math.random() * max)
+    var n_products = Math.floor(Math.random() * max)+1
     for(var i = 0; i < n_products; i++){
 	   var random_product = Math.floor(Math.random() * products.length)
 	   this.products.push(products[random_product])
@@ -21,13 +21,21 @@ Order.prototype.addProducts = function(max, products){
     }
 }
 
-/*
+Order.prototype.getProducts = function(){
+  return this.products
+}
+
+Order.prototype.getProduct = function(i){
+  return this.products[i]
+}
+
+/* NO!!!
  * Debe pintar sus productos en la zona donde se le asigne y los ingredientes en otra zona que se le asigne
  * El pedido es el encargado de redimensionar las imagenes para que quepan en el espacio dispuesto
  * y disponerlas
  */
-Order.prototype.draw = function(ctx, position, width, height){
-}
+/*Order.prototype.draw = function(ctx, position, width, height){
+}*/
 
 /*
   Funcion para saber si me vale un ingrediente

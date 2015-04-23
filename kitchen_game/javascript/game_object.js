@@ -10,6 +10,7 @@ GameObject.prototype.run = function(ctx){
 	this.draw(ctx)
 }
 
+/*TODO sobrecargar el metodo draw de GameObject*/
 GameObject.prototype.draw = function(ctx){
     ctx.drawImage(this.image, this.position.x, this.position.y, this.width, this.height)
 }

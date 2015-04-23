@@ -3,6 +3,8 @@ var ctx    = null
 var image_stack = null
 
 var order_table = null
+var ingredient = []
+var product = []
 function init(){
     canvas = document.getElementById("canvas")
     ctx    = canvas.getContext("2d")
@@ -14,13 +16,19 @@ function init(){
 }
 
 function initializeComponents(){
-    order_table = new OrdersTable(200, 200, 200, 100, image_stack.get("order_table"))
+    order_table = new OrdersTable(200, 200, 300, 200, image_stack.get("order_table"))
+    ingredient.push(new Ingredient(image_stack.get("i1")))
+    ingredient.push(new Ingredient(image_stack.get("i2")))
+    product.push(new Product(ingredient, 0, image_stack.get("p1")))
+    product.push(new Product([ingredient[0]], 0, image_stack.get("p2")))
+    order_table.newOrder(2, product)
     draw()
 }
 
 function loadImages(){
     var load_images = 0
-    var images = [["background", "images/background.png"], ["order_table", "images/order_table.png"]]
+    var images = [["background", "images/background.png"], ["order_table", "images/order_table.png"], 
+                  ["i1", "images/i1.png"], ["p1", "images/p1.png"], ["i2", "images/i2.png"], ["p2", "images/p2.png"]]
     image_stack.load(images)
 }
 
