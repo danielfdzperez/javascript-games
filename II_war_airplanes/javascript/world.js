@@ -317,8 +317,10 @@ World.prototype.show_menu = function(){
       this.ctx.fillText("Loading", this.canvas.width/2-100, this.canvas.height/2)
       setTimeout(this.show_menu, 10)
     }
-    this.menu.draw(this.ctx)
-    this.menu_on = true
+    else{
+       this.menu.draw(this.ctx)
+       this.menu_on = true
+    }
 }
 
 World.prototype.mouse_press = function(e){
