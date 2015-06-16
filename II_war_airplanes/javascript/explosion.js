@@ -7,7 +7,7 @@ function Explosion(pos, speed, accel){
     this.life = 0
     this.image_name = "big_explosion"
     this.sound_name = "explosion"
-    this.sound_src  = "../sounds/bomb.wav"
+    this.sound_src  = "sounds/bomb.wav"
     this.play_sound()   
 }
 

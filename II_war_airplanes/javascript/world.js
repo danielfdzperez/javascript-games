@@ -18,7 +18,7 @@ function World(id, n_players){
     this.pause   = false
     this.pause_on   = false
     this.exit       = false
-    this.background_music = new Sound(false, "../sounds/back.mp3", 10, "backgorund", true) 
+    this.background_music = new Sound(false, "sounds/back.mp3", 10, "backgorund", true) 
     this.total_score = new Score()
 }
 

@@ -7,7 +7,7 @@ function KamikazeEnemy(px, py, sx, sy, ax, ay, img, shot_improvements){
     this.rectangles.push(new Rectangle(px, py, 32, 32, 0, 0))
     this.image_name = img
     this.sound_name = "detector"
-    this.sound_src  = "../sounds/detector.wav"
+    this.sound_src  = "sounds/detector.wav"
     this.play_sound()   
 }
 
