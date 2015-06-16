@@ -15,6 +15,9 @@ function World(id, n_players){
     this.end = false
     this.menu = new Menu(this.canvas)
     this.menu_on = false
+    this.pause   = false
+    this.pause_on   = false
+    this.exit       = false
     this.background_music = new Sound(false, "../sounds/back.mp3", 10, "backgorund", true) 
     this.total_score = new Score()
 }
@@ -70,6 +73,8 @@ World.prototype.start = function(restart){
        this.new_player(400/(i+1), 400, i+1, 0, 0, 0, 0)
     this.end = false
     this.menu_on = false
+    this.pause = false
+    this.exit  = false
 }
 
 World.prototype.delete_obj = function(){
@@ -293,6 +298,11 @@ World.prototype.events = function(e){
        this.players[1].action(this.ev)
     if(77 in this.ev.keys_down)
 	   this.background_music.mute()
+    if(80 in this.ev.keys_down)
+           this.pause = !this.pause
+    if(27 in this.ev.keys_down){
+           this.exit = true	   
+    }
 
     //if(this.end && 13 in this.ev.keys_down)
 	
@@ -321,6 +331,13 @@ World.prototype.show_menu = function(){
        this.menu.draw(this.ctx)
        this.menu_on = true
     }
+}
+
+World.prototype.show_pause = function(){
+      //this.canvas.width = this.canvas.width
+      this.ctx.font = "50px Serif"
+      this.ctx.fillText("Pause", this.canvas.width/2-100, this.canvas.height/2)
+      this.pause_on = true
 }
 
 World.prototype.mouse_press = function(e){

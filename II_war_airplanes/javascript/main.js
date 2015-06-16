@@ -41,7 +41,26 @@ function game_loop(){
    world.update_physics()
    world.refresh_graphics()
    if(world.end_game())
-	       end()
+	end()
+   if(world.exit){
+        world.game_over()
+        go_to_menu()
+   }
+   if(world.pause)
+	pause()
+}
+
+function pause(){
+    clearTimeout(loop_time)
+    loop_time = setTimeout(pause, 10)
+    if(!world.pause_on)
+       world.show_pause()
+    if(!world.pause){
+       clearTimeout(loop_time)
+       world.delta.last_time = new Date()
+       world.pause_on = false     
+       game_loop()
+    }
 }
 
 function end(){
@@ -49,12 +68,15 @@ function end(){
     loop_time = setTimeout(end, 10)
     if(!world.end)
        world.game_over()
-    if(13 in world.ev.keys_down){
-	clearTimeout(loop_time)
-	restart = true
-	world.delete_obj()
-        menu()
-    }
+    if(13 in world.ev.keys_down)
+	go_to_menu()
+}
+
+function go_to_menu(){
+   clearTimeout(loop_time)
+   restart = true
+   world.delete_obj()
+   menu()
 }
 
 function events(){
