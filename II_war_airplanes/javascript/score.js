@@ -15,8 +15,12 @@ Score.prototype.save_score = function(){
 }
 
 Score.prototype.get_score = function(){
-    this.score = localStorage.getItem("war").split(",")
-    this.number_conversion()
+    try{
+       this.score = localStorage.getItem("war").split(",")
+       this.number_conversion()
+    }catch(e){
+       this.score = []
+    }
 }
 
 Score.prototype.add_score = function(score){

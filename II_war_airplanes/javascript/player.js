@@ -126,7 +126,7 @@ Player.prototype.regenerate = function(){
 }
 
 Player.prototype.restart = function(){
-    if(this.startup_step % 20 == 0){
+    if(this.startup_step % 40 == 0){
         this.startup = false
         this.startup_step = 1
      }
