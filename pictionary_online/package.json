@@ -1,0 +1,9 @@
+{
+  "name": "pictionary-online",
+  "version": "0.0.1",
+  "description": "pictionary server client game",
+  "dependencies": {
+    "express": "^4.12.4",
+    "socket.io": "^1.2.0"
+  }
+}
