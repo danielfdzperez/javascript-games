@@ -1,7 +1,8 @@
 (function(){
    //window.addEventListener("load", initialize, false)
    var client = null
-   var app = angular.module('app', ['ngRoute']) 
+   var world  = null
+   var app    = angular.module('app', ['ngRoute']) 
    app.controller('lobby_control', function($scope) {
        $scope.player = []
        $scope.game   = []
@@ -20,15 +21,13 @@
        }
        $scope.start_game   = function(){
           client.socket.emit('start_game')
-          $("#Lobby").toggleClass('show hide')
-          $("#Game").toggleClass('hide show')
-          $("#Canvas").toggleClass('hide show')
        }
        $scope.left_game   = function(){}
       // $scope.create_game = client.lobby.create_game()
       // $scope.join_game = client.lobby.join_game()
       // $scope.left_game = client.lobby.left_game()
        client.socket.on('lobby_update', $scope.lobby_update)
+       client.socket.on('go_run', start_game)
     })
 
     app.controller('player_name', function($scope){
@@ -53,5 +52,11 @@
     function change_button(hidden, show){
         $(hidden).toggleClass('user_action user_action_hide')
         $(show).toggleClass('user_action_hide user_action')
+    }
+    function start_game(){
+          $("#Lobby").toggleClass('show hide')
+          $("#Game").toggleClass('hide show')
+          $("#Canvas").toggleClass('hide show')
+	  world = new World("Canvas", client, null)
     }
 })()

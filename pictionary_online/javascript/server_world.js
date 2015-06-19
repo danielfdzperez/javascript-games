@@ -12,6 +12,7 @@ function ServerWorld(max_players, n_rounds, id){
    this.id                 = id
    this.is_running         = false
    this.word               = require("./words.js")
+   this.n_player_loaded    = 0
 }
 
 //Añade un nuevo jugador al mundo
@@ -24,8 +25,9 @@ ServerWorld.prototype.add_player = function(player){
       else
 	  this.player_to_find.push(player)
           
-      player.socket.on(DRAW, this.draw)
+      player.socket.on(DRAW, function(msg){that.draw(msg, this)})
       player.socket.on(ANSWER, this.answer)
+      player.socket.on('loaded', function(){that.player_loaded()})
       this.n_players ++
       player.is_playing = true
       player.world_id   = this.id
@@ -38,6 +40,9 @@ ServerWorld.prototype.add_player = function(player){
 //ServerWorld.prototype.add
 
 ServerWorld.prototype.new_round = function(){
+   for (var i in this.player)
+       this.player[i].socket.emit('new_round')
+
    this.round ++
    var round = this.round - 1
    this.drawer = this.player[round]
@@ -45,11 +50,22 @@ ServerWorld.prototype.new_round = function(){
    for(var i = 0; i < this.n_players; i++)
       if(i != round)
          this.player_to_find.push(this.player[i])
+
+   this.drawer.socket.emit('rol', "drawer")	     
+   for(var i in this.player_to_find)
+	this.player_to_find[i].socket.emit('rol', "browser")
 }
 
 ServerWorld.prototype.run = function(){
-    this.is_running = true
-    this.new_round()
+    if(this.n_player_loaded == this.n_players){
+       this.is_running = true
+       this.new_round()
+       for (var i in this.player)
+          this.player[i].socket.emit('run')
+    }else
+       for (var i in this.player)
+          this.player[i].socket.emit('go_run')
+    
 }
 
 ServerWorld.prototype.get_players = function(){
@@ -61,15 +77,20 @@ ServerWorld.prototype.get_game_info = function(){
 }
 
 //Hacerlos privados y posiblemente van en el usuario
-ServerWorld.prototype.draw = function(msg){
+ServerWorld.prototype.draw = function(msg, client){
    if(!this.is_running)
       return	 
-   if(this == that.drawer.socket)
-      for(var i = 0; i < that.player_to_find.length; i++)
-         that.player_to_find[i].socket.emit(DRAW, msg);
+   if(client == this.drawer.socket)
+      for(var i = 0; i < this.player_to_find.length; i++)
+         this.player_to_find[i].socket.emit(DRAW, msg);
 }
 ServerWorld.prototype.answer = function(msg){
    if(!this.is_running)
       return	 
    //if(this != that.drawer.socket)
+}
+ServerWorld.prototype.player_loaded = function(){
+    this.n_player_loaded ++
+    if(this.n_player_loaded == this.n_players)
+	this.run()
 }
