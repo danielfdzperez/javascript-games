@@ -1,4 +1,4 @@
-
+module.exports = Lobby
 /*Lobby
  *
  * Parametros
@@ -54,9 +54,18 @@ Lobby.prototype.player_leave_non_start_game = function(player){
     this.send_lobby_info()
 }
 
-Lobby.prototype.send_lobby_info(){
+Lobby.prototype.send_lobby_info = function(){
+    var player_data = []
     for(var i = 0; i < this.player_waiting.length; i++)
-	this.player[i].socket.emit('lobby_update', {player:this.player_waiting, game:this.game})
+	player_data.push(this.player_waiting[i].get_data())
+    //for(var i = 0; i < this.player_in_non_start_game.length; i++)
+	//player_data.push(this.player_in_non_start_game[i].get_data())
+
+    for(var i = 0; i < this.player_waiting.length; i++){
+	this.player_waiting[i].socket.emit('lobby_update', {player:player_data, game:this.game})
+    }
+
+
     for(var i = 0; i < this.player_in_non_start_game.length; i++)
-	this.player_in_non_start_game[i].socket.emit('lobby_update', {player:this.player_waiting, game:this.game})
+	this.player_in_non_start_game[i].socket.emit('lobby_update', {player:player_data, game:this.game})
 }

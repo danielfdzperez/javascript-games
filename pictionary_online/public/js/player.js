@@ -3,6 +3,6 @@ function Player(name, rol){
    this.rol  = rol  //Rol que tiene en el juego dibujante o el que busca adivinar el dibujo
 }
 
-Player.prototype.change_rol = function(new_rol){
+Player.prototype.assign_rol = function(new_rol){
    this.rol = new_rol
 }
