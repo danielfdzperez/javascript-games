@@ -57,7 +57,7 @@ ServerWorld.prototype.get_players = function(){
 }
 
 ServerWorld.prototype.get_game_info = function(){
-    return {n_players: this.n_players, n_rounds: this.n_rounds}
+    return {n_players: this.n_players, n_rounds: this.n_rounds, max_players:this.max_players, id:this.id}
 }
 
 //Hacerlos privados y posiblemente van en el usuario

@@ -12,3 +12,7 @@ function Player(socket, id, name){
 Player.prototype.get_data = function(){
     return {name: this.name, puntuation:this.puntuation}
 }
+
+Player.prototype.set_name = function(name){
+    this.name = name
+}
