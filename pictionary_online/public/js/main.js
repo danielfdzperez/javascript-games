@@ -18,6 +18,7 @@
        } 
        $scope.join_game   = function(id){
           client.socket.emit('join_game', id)
+	  change_button("#LeaveGame", "#Create")
        }
        $scope.start_game   = function(){
           client.socket.emit('start_game')
@@ -64,5 +65,17 @@
           $("#Game").toggleClass('hide show')
           $("#Canvas").toggleClass('hide show')
 	  world = new World("Canvas", client, null)
+	  world.finish = function(){
+	      end_game()
+	  }
+    }
+    function end_game(){
+          $("#Lobby").toggleClass('hide show')
+          $("#Game").toggleClass('show hide')
+          $("#Canvas").toggleClass('show hide')
+	  $("#StartGame").removeClass( "user_action" ).addClass( "user_action_hide" )
+	  $("#Create").removeClass( "user_action_hide" ).addClass( "user_action" )
+	  $("#LeaveGame").removeClass( "user_action" ).addClass( "user_action_hide" )
+	  world = null
     }
 })()

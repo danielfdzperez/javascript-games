@@ -16,3 +16,7 @@ Player.prototype.get_data = function(){
 Player.prototype.set_name = function(name){
     this.name = name
 }
+
+Player.prototype.delete_listener = function(name){
+    delete this.socket._events[name]
+}

@@ -56,8 +56,11 @@ function player_name(name){
 }
 function create_game(players,rounds){
     console.log("new game")
-    world[world_id] = new ServerWorld(players, rounds,world_id)
+    world[world_id] = new ServerWorld(players, rounds, world_id)
     lobby.add_game(world[world_id])
+    world[world_id].finish = function(){
+	delete world[this.id]
+    }
 
     var player = client[this.id]
     world[world_id].add_player(player)
@@ -66,7 +69,8 @@ function create_game(players,rounds){
     //lobby.send_lobby_info()
 }
 function leave_game(){
-
+  var player = client[this.id]
+  lobby.add_waiting_player(player)
 }
 function join_game(id){
     var player = client[this.id]
@@ -78,4 +82,3 @@ function start_game(){
     lobby.start_game(world[player.world_id])
     world[player.world_id].run()
 }
-

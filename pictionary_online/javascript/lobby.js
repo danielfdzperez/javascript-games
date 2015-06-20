@@ -32,6 +32,8 @@ Lobby.prototype.add_player_in_non_start_game = function(player){
 
 //Cuando empieza una partida se sacan a los jugadores del array de jugadores en una partida sin empezar y a la partida
 Lobby.prototype.start_game = function(game){
+    if(!game)
+	return
     var player = game.get_players()
     for(var i = 0; i < player.length; i++)
       this.remove_player_non_start_game(player[i]) 

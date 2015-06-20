@@ -20,6 +20,8 @@ function ServerWorld(max_players, n_rounds, id){
 ServerWorld.prototype.add_player = function(player){
    var that = this
    if(this.n_players < this.max_players){
+      console.log("--------------ANTES----------------")
+      console.log(player)
       this.player.push(player)
       if(this.n_players == 0)
 	   this.drawer = player
@@ -27,12 +29,13 @@ ServerWorld.prototype.add_player = function(player){
 	  this.player_to_find.push(player)
           
       player.socket.on(DRAW, function(msg){that.draw(msg, this)})
-      player.socket.on(ANSWER, this.answer)
       player.socket.on('loaded', function(){that.player_loaded()})
-      player.socket.on('answer', function(word){that.verify_answer(word, this)})
+      player.socket.on(ANSWER, function(word){that.verify_answer(word, this)})
       this.n_players ++
       player.is_playing = true
       player.world_id   = this.id
+      console.log("--------------DESPUES----------------")
+      console.log(player)
       return true
    }
    else
@@ -42,6 +45,13 @@ ServerWorld.prototype.add_player = function(player){
 //ServerWorld.prototype.add
 
 ServerWorld.prototype.new_round = function(){
+   
+   if(this.round + 1 > this.n_rounds){
+       this.end_game()
+       return
+   }
+
+
    for (var i in this.player)
        this.player[i].socket.emit('new_round')
 
@@ -82,6 +92,19 @@ ServerWorld.prototype.run = function(){
     
 }
 
+ServerWorld.prototype.end_game = function(){
+     for (var i in this.player){
+       this.player[i].socket.emit('end_game')
+       this.player[i].delete_listener(ANSWER)
+       this.player[i].delete_listener(DRAW)
+       this.player[i].delete_listener('loaded')
+     }
+     this.player = null
+     this.drawer = null
+     this.player_to_find = null
+     this.finish()
+}
+
 ServerWorld.prototype.get_players = function(){
     return this.player
 }
@@ -94,6 +117,7 @@ ServerWorld.prototype.get_game_info = function(){
 ServerWorld.prototype.draw = function(msg, client){
    if(!this.is_running)
       return	 
+   console.log(this.drawer)
    if(client == this.drawer.socket)
       for(var i = 0; i < this.player_to_find.length; i++)
          this.player_to_find[i].socket.emit(DRAW, msg);

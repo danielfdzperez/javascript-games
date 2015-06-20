@@ -1,6 +1,6 @@
 function World(canvas, player, players){
    var that = this
-
+   this.end = false
 
    //Canvas funcionalidades
    this.canvas = document.getElementById(canvas)
@@ -71,6 +71,7 @@ function World(canvas, player, players){
    this.player.socket.on('rol', function(rol){that.change_rol(rol)})
    this.player.socket.on('word', function(word){$("#Drawer span").text(word)})
    this.player.socket.on('wrong_word', function(){$("#Answer").val("Error")})
+   this.player.socket.on('end_game', function(){that.end_game()})
    this.players = players
 
    this.is_clicking = false
@@ -104,7 +105,22 @@ World.prototype.change_rol = function(rol){
 World.prototype.send_answer = function(word){
     this.player.socket.emit('answer', word)
 }
-
+World.prototype.end_game = function(){
+    var ENTER = 13
+    var that = this
+    this.end = true
+    this.canvas.width = this.canvas.width
+    this.ctx.font = "50px Serif"
+    this.ctx.fillText("Final del juego", this.canvas.width/2-100, this.canvas.height/2)
+    this.ctx.font = "20px Arial"
+    this.ctx.fillText("Presionar enter para continuar", this.canvas.width/2-50, this.canvas.height/2+100, 400)
+    window.addEventListener("keydown", function(e){
+	    if(e.keyCode == ENTER && that.end){
+	      that.player.socket.emit('leave_game')
+	      that.finish() 
+	    }
+       }, false)
+}
 
 World.prototype.waiting = function(){
 }
