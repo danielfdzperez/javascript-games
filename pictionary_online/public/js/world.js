@@ -5,30 +5,62 @@ function World(canvas, player, players){
    //Canvas funcionalidades
    this.canvas = document.getElementById(canvas)
    this.ctx = this.canvas.getContext("2d")
-   this.canvas.addEventListener("mousedown",  function(event){
+   this.canvas.addEventListener("mousedown",  click)
+   this.canvas.addEventListener("touchstart",  click)
+   function click(event){
+       var x
+       var y
+       switch(event.type){
+	   case "mousedown":
+	       x = event.pageX
+	       y = event.pageY
+	       break;
+	   case "touchstart":
+	       x = event.changedTouches[0].pageX
+ 	       y = event.changedTouches[0].pageY
+	       break;
+       }
        that.is_clicking    = true
-       that.before_point.x = event.pageX - that.canvas.offsetLeft
-       that.before_point.y = event.pageY - that.canvas.offsetTop
-   })
+       that.before_point.x = x - that.canvas.offsetLeft
+       that.before_point.y = y - that.canvas.offsetTop
+   }
    this.canvas.addEventListener("mouseup",    no_click);
+   this.canvas.addEventListener("touchend",    no_click);
    this.canvas.addEventListener("mouseleave", no_click);
+   this.canvas.addEventListener("touchleave",    no_click);
    function no_click(event){
       that.is_clicking = false
    }
 
-   this.canvas.addEventListener("mousemove",  function(event){
-        if(that.player.rol != "drawer")
-    	   return
-        if(that.is_clicking)
-    	if(that.before_point.x != event.pageX || that.before_point.y != event.pageY){
+   this.canvas.addEventListener("mousemove",  move)
+   this.canvas.addEventListener("touchmove",  move)
+   function move(event){
+       var x
+       var y
+       switch(event.type){
+	   case "mousemove":
+	       x = event.pageX
+	       y = event.pageY
+	       break;
+	   case "touchmove":
+	       x = event.changedTouches[0].pageX
+ 	       y = event.changedTouches[0].pageY
+	       break;
+       }
+       x -= that.canvas.offsetLeft
+       y -= that.canvas.offsetTop
+       if(that.player.rol != "drawer")
+          return
+       if(that.is_clicking)
+       if(that.before_point.x != x || that.before_point.y != y){
     	   var point = { previous:{x:that.before_point.x, y:that.before_point.y}, 
-    	                 last:{x:event.pageX - that.canvas.offsetLeft, y:event.pageY - that.canvas.offsetTop} }
+    	                 last:{x:x, y:y} }
     	   that.draw(point)
            that.player.socket.emit('pintar',  point)
-           that.before_point.x = event.pageX - that.canvas.offsetLeft
-           that.before_point.y = event.pageY - that.canvas.offsetTop
-    	}
-   })
+           that.before_point.x = x
+           that.before_point.y = y 
+      }
+   }
 
    //Acciones del jugador
    this.player = player
