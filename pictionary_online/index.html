@@ -4,6 +4,7 @@
     <title>Pictionary</title>
     <link rel="stylesheet" type="text/css" href="css/lobby.css">
     <link rel="stylesheet" type="text/css" href="css/index.css">
+    <link rel="stylesheet" type="text/css" href="css/game.css">
 
     <!--script src="https://cdn.socket.io/socket.io-1.2.0.js"--></script>
     <script src="js/socketIo.js"></script>
@@ -61,8 +62,14 @@
        </form>
     </div>
 
-    <div id="Game" class="element hide">
-       <canvas id="Canvas" class="hide" width="910px" height="510px" style="border-style:solid; position:absolute;"></canvas>
+    <div id="Game" class="element hide" ng-controller="game">
+       <canvas id="Canvas" class="hide" width="910px" height="510px" style="border-style:solid;"></canvas>
+       <form id = "Browser" class="show_action">
+         <label for="answer">Palabra: </label>
+         <input id="Answer" type="text" name="answer" ng-model="word">
+         <button name="anser_button" type="button" ng-click="send_answer();">Enviar</button>
+       </form>
+       <div id="Drawer" class="show_action"><span>Error sin palabra</span></div>
     </div>
 
   </body>

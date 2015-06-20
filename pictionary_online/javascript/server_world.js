@@ -12,6 +12,7 @@ function ServerWorld(max_players, n_rounds, id){
    this.id                 = id
    this.is_running         = false
    this.word               = require("./words.js")
+   this.actual_word        = null
    this.n_player_loaded    = 0
 }
 
@@ -28,6 +29,7 @@ ServerWorld.prototype.add_player = function(player){
       player.socket.on(DRAW, function(msg){that.draw(msg, this)})
       player.socket.on(ANSWER, this.answer)
       player.socket.on('loaded', function(){that.player_loaded()})
+      player.socket.on('answer', function(word){that.verify_answer(word, this)})
       this.n_players ++
       player.is_playing = true
       player.world_id   = this.id
@@ -44,16 +46,28 @@ ServerWorld.prototype.new_round = function(){
        this.player[i].socket.emit('new_round')
 
    this.round ++
-   var round = this.round - 1
-   this.drawer = this.player[round]
+   var player_turn = (this.round - 1) % this.player.length
+   this.drawer = this.player[player_turn]
    this.player_to_find = []
    for(var i = 0; i < this.n_players; i++)
-      if(i != round)
+      if(i != player_turn)
          this.player_to_find.push(this.player[i])
 
    this.drawer.socket.emit('rol', "drawer")	     
    for(var i in this.player_to_find)
 	this.player_to_find[i].socket.emit('rol', "browser")
+   this.change_word()
+}
+
+ServerWorld.prototype.change_word = function(){
+    this.actual_word = this.word[Math.floor((Math.random() * this.word.length))] 
+    this.drawer.socket.emit('word', this.actual_word)	     
+}
+ServerWorld.prototype.verify_answer = function(word, socket){
+    if(this.actual_word.toLowerCase() == word.toLowerCase())
+	this.new_round()
+    else
+	socket.emit('wrong_word')
 }
 
 ServerWorld.prototype.run = function(){

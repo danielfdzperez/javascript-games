@@ -30,11 +30,15 @@ function World(canvas, player, players){
     	}
    })
 
+   //Acciones del jugador
    this.player = player
    this.player.socket.on('pintar', function(point){that.draw(point)})
    this.player.socket.on('wait', this.waiting)
    this.player.socket.on('run', this.run)
-   this.player.socket.on('rol', function(rol){that.player.set_rol(rol)})
+   this.player.socket.on('new_round', function(){that.new_round()})
+   this.player.socket.on('rol', function(rol){that.change_rol(rol)})
+   this.player.socket.on('word', function(word){$("#Drawer span").text(word)})
+   this.player.socket.on('wrong_word', function(){$("#Answer").val("Error")})
    this.players = players
 
    this.is_clicking = false
@@ -42,13 +46,33 @@ function World(canvas, player, players){
    this.player.socket.emit('loaded')
 }
 
-World.prototype.click = World.prototype.no_click = World.prototype.move = 
 World.prototype.draw = function(point){
    this.ctx.beginPath();
    this.ctx.moveTo(point.previous.x-8, point.previous.y-8);
    this.ctx.lineTo(point.last.x-8, point.last.y-8);
    this.ctx.stroke();
 }
+World.prototype.new_round = function(){
+    this.canvas.height = this.canvas.height
+}
+World.prototype.change_rol = function(rol){
+    var browser = $("#Browser")
+    var drawer  = $("#Drawer")
+    if(rol == "drawer"){
+	browser.removeClass( "show_action" ).addClass( "hide_action" )
+	drawer.removeClass("hide_action").addClass("show_action")
+    }else{
+	drawer.removeClass( "show_action" ).addClass( "hide_action" )
+	browser.removeClass("hide_action").addClass("show_action")
+    }
+
+    this.player.set_rol(rol)
+}
+
+World.prototype.send_answer = function(word){
+    this.player.socket.emit('answer', word)
+}
+
 
 World.prototype.waiting = function(){
 }

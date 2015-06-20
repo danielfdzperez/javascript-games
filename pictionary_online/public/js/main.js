@@ -48,6 +48,12 @@
 		change_button("#Create", "#StartGame")
         }
     })
+    app.controller('game', function($scope){
+    	$scope.word
+    	$scope.send_answer = function(){
+	   world.send_answer($scope.word)
+	}
+    })
     
     function change_button(hidden, show){
         $(hidden).toggleClass('user_action user_action_hide')
