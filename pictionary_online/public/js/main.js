@@ -51,6 +51,7 @@
     })
     app.controller('game', function($scope){
     	$scope.word
+	$scope.time
     	$scope.send_answer = function(){
 	   world.send_answer($scope.word)
 	}

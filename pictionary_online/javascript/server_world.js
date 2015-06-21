@@ -2,6 +2,7 @@ module.exports = ServerWorld
 var DRAW = 'pintar' //constante del nombre del mensaje con el que se indica que se pinta
 var ANSWER = 'answer' 
 function ServerWorld(max_players, n_rounds, id){
+   var that = this
    this.n_rounds           = n_rounds  //Cantidad de rondas
    this.round              = 0      //Ronda actual
    this.max_players        = max_players //Numero maximo de jugadores
@@ -12,6 +13,8 @@ function ServerWorld(max_players, n_rounds, id){
    this.id                 = id
    this.is_running         = false
    this.word               = require("./words.js")
+   var Countdown          = require("./countdown.js")
+   this.countdown          = new Countdown((2*60), function(){that.time_is_over()}, function(){that.inform_time()})
    this.actual_word        = null
    this.n_player_loaded    = 0
 }
@@ -20,8 +23,8 @@ function ServerWorld(max_players, n_rounds, id){
 ServerWorld.prototype.add_player = function(player){
    var that = this
    if(this.n_players < this.max_players){
-      console.log("--------------ANTES----------------")
-      console.log(player)
+      //console.log("--------------ANTES----------------")
+      //console.log(player)
       this.player.push(player)
       if(this.n_players == 0)
 	   this.drawer = player
@@ -34,8 +37,8 @@ ServerWorld.prototype.add_player = function(player){
       this.n_players ++
       player.is_playing = true
       player.world_id   = this.id
-      console.log("--------------DESPUES----------------")
-      console.log(player)
+      //console.log("--------------DESPUES----------------")
+      //console.log(player)
       return true
    }
    else
@@ -44,13 +47,13 @@ ServerWorld.prototype.add_player = function(player){
 
 //ServerWorld.prototype.add
 
-ServerWorld.prototype.new_round = function(){
-   
+ServerWorld.prototype.new_round = function(){ 
    if(this.round + 1 > this.n_rounds){
        this.end_game()
        return
    }
 
+   this.countdown.stop()
 
    for (var i in this.player)
        this.player[i].socket.emit('new_round')
@@ -67,6 +70,7 @@ ServerWorld.prototype.new_round = function(){
    for(var i in this.player_to_find)
 	this.player_to_find[i].socket.emit('rol', "browser")
    this.change_word()
+   this.countdown.start()
 }
 
 ServerWorld.prototype.change_word = function(){
@@ -117,7 +121,6 @@ ServerWorld.prototype.get_game_info = function(){
 ServerWorld.prototype.draw = function(msg, client){
    if(!this.is_running)
       return	 
-   console.log(this.drawer)
    if(client == this.drawer.socket)
       for(var i = 0; i < this.player_to_find.length; i++)
          this.player_to_find[i].socket.emit(DRAW, msg);
@@ -131,4 +134,12 @@ ServerWorld.prototype.player_loaded = function(){
     this.n_player_loaded ++
     if(this.n_player_loaded == this.n_players)
 	this.run()
+}
+
+ServerWorld.prototype.time_is_over = function(){
+    this.new_round()
+}
+ServerWorld.prototype.inform_time = function(){
+       for (var i in this.player)
+          this.player[i].socket.emit('time', this.countdown.current_time)
 }

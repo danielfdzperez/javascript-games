@@ -14,6 +14,7 @@
     <script src="js/angularjs.js"  ></script>
     <script src="https://code.angularjs.org/1.3.14/angular-route.js"></script>
     <script src="js/lobby.js"  ></script>
+    <script src="js/countdown.js"  ></script>
     <script src="js/world.js"  ></script>
     <script src="js/client.js"></script>
     <script src="js/main.js"></script>
@@ -64,6 +65,7 @@
 
     <div id="Game" class="element hide" ng-controller="game">
        <canvas id="Canvas" class="hide" width="910px" height="510px" style="border-style:solid;"></canvas>
+       <span id="Time">{{time}}</span>
        <form id = "Browser" class="show_action">
          <label for="answer">Palabra: </label>
          <input id="Answer" type="text" name="answer" ng-model="word">

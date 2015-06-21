@@ -1,7 +1,10 @@
 function World(canvas, player, players){
    var that = this
    this.end = false
-
+   this.countdown = new Countdown((2*60))
+   this.countdown.on_tick = function(){
+       $("#Time").text(this.to_string())
+   }
    //Canvas funcionalidades
    this.canvas = document.getElementById(canvas)
    this.ctx = this.canvas.getContext("2d")
@@ -86,7 +89,9 @@ World.prototype.draw = function(point){
    this.ctx.stroke();
 }
 World.prototype.new_round = function(){
+    this.countdown.stop()
     this.canvas.height = this.canvas.height
+    this.countdown.start()
 }
 World.prototype.change_rol = function(rol){
     var browser = $("#Browser")
