@@ -75,6 +75,7 @@ function World(canvas, player, players){
    this.player.socket.on('word', function(word){$("#Drawer span").text(word)})
    this.player.socket.on('wrong_word', function(){$("#Answer").val("Error")})
    this.player.socket.on('end_game', function(){that.end_game()})
+   this.player.socket.on('syn_time', function(time){that.synchronise_time(time)})
    this.players = players
 
    this.is_clicking = false
@@ -125,6 +126,14 @@ World.prototype.end_game = function(){
 	      that.finish() 
 	    }
        }, false)
+}
+
+World.prototype.synchronise_time = function(time){
+    var diff = (this.countdown.current_time - time) * 1000
+    console.log(this.countdown.current_time)
+    this.countdown.start_time -= diff
+    console.log(this.countdown.start_time)
+
 }
 
 World.prototype.waiting = function(){

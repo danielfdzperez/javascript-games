@@ -140,6 +140,7 @@ ServerWorld.prototype.time_is_over = function(){
     this.new_round()
 }
 ServerWorld.prototype.inform_time = function(){
-       for (var i in this.player)
-          this.player[i].socket.emit('time', this.countdown.current_time)
+   if(this.countdown.current_time % 5 == 1)  
+      for (var i in this.player)
+          this.player[i].socket.emit('syn_time', this.countdown.current_time)
 }
