@@ -53,7 +53,6 @@ ServerWorld.prototype.new_round = function(){
        return
    }
 
-   this.countdown.stop()
 
    for (var i in this.player)
        this.player[i].socket.emit('new_round')
@@ -79,7 +78,7 @@ ServerWorld.prototype.change_word = function(){
 }
 ServerWorld.prototype.verify_answer = function(word, socket){
     if(this.actual_word.toLowerCase() == word.toLowerCase())
-	this.new_round()
+        this.countdown.stop() //Se para el temporizador y a su vez este mediante el metodo on_stop llamara a new_round
     else
 	socket.emit('wrong_word')
 }
