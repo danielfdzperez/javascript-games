@@ -8,7 +8,7 @@
 function Product(ingredients, time, image){
     this.time = time
     this.image = image
-    this.ingredients = ingredients
+    this.ingredients = ingredients.slice() //Clone the array
 
     /*Agregamos estados para cambiar la forma de pintar*/
     /*Implementar clase EstateMachine*/
@@ -25,7 +25,7 @@ Product.prototype.getIngredient = function(i){
 }
 	
 /*
- Funcion parasaber si quiero un producto
+ Funcion para saber si quiero un producto
 
   Recibir un product y comprobar si es el primero de mis ingredientes
   	si lo es 
@@ -33,6 +33,16 @@ Product.prototype.getIngredient = function(i){
   	si no
 		notifico que no lo quiero -> flase
 */
+Product.prototype.isTheRightIngredient = function(ingredient){
+    for(var i in this.ingredients)
+	if(this.ingredients[0] == ingredient){
+	    this.ingredients.splice(0, 1)
+	    //FALTA Comprobar estado
+	    return true
+	}
+    return false
+
+}
 
 /*
  * En su función draw tendra 2 estados, cuando aun no esta echo el producto, se pintara opaco

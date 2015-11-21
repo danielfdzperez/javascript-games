@@ -45,6 +45,12 @@ Order.prototype.getProduct = function(i){
   si alguno lo quiere acabo y lo notifico -> true
   si nadie lo quiere acabo y lo notifico -> false
 */
+Order.prototype.wantThisIngredient = function(ingredient){
+    for(var i in this.products)
+	if(this.products.isTheRightIngredient(ingredient))
+	    return true
+    return false
+}
 
 /*
   Comprobar si algun pedido se ha finalizado y pintarlo diferente

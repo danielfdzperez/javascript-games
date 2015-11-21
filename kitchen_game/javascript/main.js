@@ -46,6 +46,7 @@ function draw(){
     ctx.drawImage(image_stack.get("background"),0,0, canvas.width, canvas.height+10)
     //ctx.fillRect(20,20,150,100)
     order_table.draw(ctx)
+    setTimeout(draw, 1000)
 }
 
 
