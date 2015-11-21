@@ -19,11 +19,9 @@ Countdown.prototype.start = function(){
    
     	if(that.current_time > 0 && that.is_running)
     	   that.timeout =  setTimeout(count, 1000)
-    	else{
-    	   that.is_running = false
-    	   if(that.on_stop)
-    	      that.on_stop()
-    	}
+    	else
+    	   that.stop()
+    	   
     	if(that.on_tick)
     	   that.on_tick()
      }())
@@ -32,6 +30,8 @@ Countdown.prototype.start = function(){
 Countdown.prototype.stop = function(){
     this.is_running = false
     clearTimeout(this.timeout)
+    if(this.on_stop)
+       this.on_stop()
 }
 
 Countdown.prototype.to_string = function(){
