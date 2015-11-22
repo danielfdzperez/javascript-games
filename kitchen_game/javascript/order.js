@@ -47,9 +47,13 @@ Order.prototype.getProduct = function(i){
 */
 Order.prototype.wantThisIngredient = function(ingredient){
     for(var i in this.products)
-	if(this.products.isTheRightIngredient(ingredient))
+	if(this.products[i].isTheRightIngredient(ingredient))
 	    return true
     return false
+}
+
+Order.prototype.updateTime = function(delta_time){
+    this.time -= delta_time
 }
 
 /*

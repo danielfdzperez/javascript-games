@@ -23,8 +23,8 @@ OrdersTable.prototype.newOrder = function(n_max_producs, products){
 /*
  * Se comprobará y actualizará el tiempo del pedido, y se actuara en consecuencia si es 0 o menor. 
  */
-OrdersTable.prototype.update = function(){
-
+OrdersTable.prototype.update = function(delta_time){
+    this.order.updateTime(delta_time)
 }
 
 /*
@@ -70,6 +70,15 @@ funcion para cuando me dan un ingrediente
 	si lo quiere : quito el ingrediente y acabo
 	si no lo quiere : sigo con el siguiente y repito pasos hasta acabar ingredientes
 */
+OrdersTable.prototype.wantSomeIngredient = function(ingredient){
+    var found = false
+    for(var i = 0; i < ingredient.length && !found; i++){
+	if(this.order.wantThisIngredient(ingredient[i])){
+	    ingredient.splice(i, 1)
+	    found = true
+	}
+    }
+}
 
 /* TODO 
  * Debe tener 2 estados [Ocupada y libre]

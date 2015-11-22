@@ -6,7 +6,7 @@
  * ingredietns {Array} Array with the ingredints form the product, in order of creation.
  */
 function Product(ingredients, time, image){
-    this.time = time
+    this.time = time //In seconds
     this.image = image
     this.ingredients = ingredients.slice() //Clone the array
 
